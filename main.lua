@@ -11,7 +11,6 @@ end
 
 function love.update(dt)
     if currentFilm then
-        print(currentFilm.playhead)
         currentFilm:update(dt)
         timeline:update(dt)
     end
@@ -51,16 +50,22 @@ end
 function love.mousepressed(x,y,button,isTouch)
     -- Playhead capture
     if button == 1 and timeline then
-        if timeline.isHover then
+        if timeline:isHover() then
             timeline.isPressed = true
+        else
+            if timeline:isFullHover() then
+                timeline:onRelease(x)
+            end
         end
     end
 end
 
 function love.mousereleased(x,y,button,isTouch)
     -- Playhead release
-    if button == 1 and timeline and timeline.isPressed then
-        timeline:onRelease(x)
+    if button == 1 and timeline then
+        if timeline.isPressed then
+            timeline:onRelease(x)
+        end
     end
 end
 

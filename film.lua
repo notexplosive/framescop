@@ -111,18 +111,23 @@ Film.movePlayheadTo = function(self,index)
 end
 
 Film.status = function(self)
-    -- The binary most likely isn't at original framerate (24), so we scale up the "current frame" we're on
-    local realFPS = 24
-    local scale = realFPS / self.fps
-    local seconds = (self.playhead)*(scale / realFPS / 2)
-    local video_frame = (self.playhead-1) * scale
-    
-    return 'time: ' .. string.format("%02d",seconds/60) .. ':'
-                    .. string.format("%02d",seconds%60) .. ';' 
-                    .. string.format("%02d",video_frame%realFPS) .. '\t'
+    return 'time: ' .. self:timeString()
     .. self.framesInMemory .. ' images in memory' .. '\t'
 end
 
+Film.timeString = function(self,x)
+    if x == nil then 
+        x = self.playhead
+    end
+    -- The binary most likely isn't at original framerate (24), so we scale up the "current frame" we're on
+    local realFPS = 24
+    local scale = realFPS / self.fps
+    local seconds = (x)*(scale / realFPS / 2)
+    local video_frame = (x-1) * scale
+    return string.format("%02d",seconds/60) .. ':'
+    .. string.format("%02d",seconds%60) .. ';' 
+    .. string.format("%02d",video_frame%realFPS) .. '\t'
+end
 
 --- HELPER FUNCTIONS BELOW THIS POINT ---
 
