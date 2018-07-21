@@ -24,8 +24,8 @@ updateWindowTitle()
 love.window.updateMode(800,600,{resizable=true})
 
 function love.load(arg)
-    --currentFilm = Film.new('binaries/petscop8')
-    --timeline = Timeline.new(currentFilm)
+    -- Build working dir cache
+    loadWorkingDirectory()
 end
 
 function love.update(dt)
@@ -41,6 +41,19 @@ end
 
 function love.draw()
     love.graphics.setFont(LOVEdefaultFont)
+
+    if not currentFilm then
+        local binaries = loadWorkingDirectory()
+        for i,obj in ipairs(binaries) do
+            if love.keyboard.isDown(i) then
+                love.graphics.setColor(0.5,0.5,1)
+                currentFilm = Film.new(obj.path)
+                timeline = Timeline.new(currentFilm)
+            end
+            love.graphics.print(i .. ':\t'..obj.filename,0,(i-1)*love.graphics.getFont():getHeight())
+            love.graphics.setColor(1,1,1)
+        end
+    end
 
     if currentFilm then
         currentFilm:draw()

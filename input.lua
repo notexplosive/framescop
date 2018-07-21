@@ -1,3 +1,6 @@
+local ctlStateEnum = require('controller_state')
+local Keyframe = require('keyframe')
+
 --- KEYBOARD BEHAVIOR ---
 love.keyboard.setKeyRepeat(true)
 function love.keypressed(key, scancode, isrepeat)
