@@ -19,7 +19,7 @@ Film.new = function(dirPath)
     self.path = dirPath
     self.warning = false
     self.warningTimer = 0
-    self.idleTimer = 0
+    self.idleTimer = 1
     self.framesInMemory = 0
     self.cachedFrontier = 0
     self.preloading = false
@@ -31,7 +31,7 @@ Film.new = function(dirPath)
     end
 
     self.data = {}
-    self:h_loadAt(1,24)
+    self:h_loadAt(1,30)
 
     return self
 end
@@ -41,9 +41,6 @@ Film.update = function(self,dt)
     self.idleTimer = self.idleTimer + dt
     self.preloading = false
 
-    -- Should be 24... right?
-    -- TODO: What the hell is happening here? This looks more correct for realtime
-    -- but 24 fps creates bad timestamps
     local FPS = 15
 
     if self.playRealTime then
@@ -62,7 +59,7 @@ Film.update = function(self,dt)
         -- Warning enables the red border. If it's been red for 1 second, just load the next
         -- chunk, we warned them so they will expect the lag.
         if self.warningTimer > .25 then
-            self:h_loadAt(self:h_nextUnloadedFromPlayhead(),24)
+            self:h_loadAt(self:h_nextUnloadedFromPlayhead(),15)
             self.warningTimer = 0
         end
     else
@@ -71,7 +68,7 @@ Film.update = function(self,dt)
     end
 
     if self.idleTimer > 1 then
-        if self:h_loadAt(self:h_nextUnloadedFromPlayhead(),14) then
+        if self:h_loadAt(self:h_nextUnloadedFromPlayhead(),15) then
             printst('Loading ahead...')
             self.preloading = true
         end
@@ -107,6 +104,11 @@ Film.draw = function(self)
         love.graphics.rectangle('line',0,0,love.graphics.getDimensions())
         love.graphics.setColor(1,1,1)
     end
+
+    if self.playRealTime then
+        love.graphics.setColor(1,1,1)
+        love.graphics.rectangle('line',0,0,love.graphics.getDimensions())
+    end
 end
 
 Film.getFrameImage = function(self,index)
@@ -133,11 +135,10 @@ Film.timeString = function(self,x)
     if x == nil then 
         x = self.playhead
     end
-    -- The binary most likely isn't at original framerate (24), so we scale up the "current frame" we're on
+    -- The binary most likely isn't at original framerate (30), so we scale up the "current frame" we're on
     local realFPS = 30
-    local scale = realFPS / self.fps
-    local seconds = (x)*(scale / realFPS / 2)
-    local video_frame = (x-1) * scale
+    local video_frame = (x-1) * (realFPS / self.fps)
+    local seconds = math.floor(video_frame/realFPS) --(x)*(scale / realFPS)
     return string.format("%02d",seconds/60) .. ':'
     .. string.format("%02d",seconds%60) .. ';' 
     .. string.format("%02d",video_frame%realFPS) .. '\t'

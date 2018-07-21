@@ -9,6 +9,7 @@ Version 1.0
 +Realtime playback
 
 todo:
+Saving input keyframes to disk
 Choosing a file to upload
 Make all the binaries
 

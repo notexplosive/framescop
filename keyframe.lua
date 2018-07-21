@@ -4,8 +4,8 @@ local Keyframe = {}
 Keyframe.__index = Keyframe
 
 Keyframe.list = {}
-Keyframe.x = 600
-Keyframe.y = 200
+Keyframe.x = 364
+Keyframe.y = love.graphics.getHeight() - 128 - 32
 Keyframe.editMode = false
 
 Keyframe.new = function(film,frameIndex,state)
@@ -34,20 +34,29 @@ end
 
 Keyframe.drawUI = function(film)
     local buttonRadius = 16
-    local x = Keyframe.x+buttonRadius/2
-    local y = Keyframe.y+buttonRadius/2
+    local x = Keyframe.x+buttonRadius
+    local y = Keyframe.y+buttonRadius
 
     local state = Keyframe.getStateAtTime(film.playhead)
-    if Keyframe.editMode then
-        love.graphics.setColor(1,0.25,0.75)
+
+    if state % 2 == 1 then
+        love.graphics.rectangle('line',Keyframe.x-16,Keyframe.y-16,256,128)
     end
 
     local kf = Keyframe.getCurrentKeyframe(film)
 
-    Keyframe.drawButton('V',x+32,y+64,buttonRadius,bit.band(state,ctlStateEnum.down))
+    if Keyframe.editMode then
+        love.graphics.setColor(1,0.25,0.75)
+    end
+    Keyframe.drawButton('V',x+32,y+64,buttonRadius,0,bit.band(state,ctlStateEnum.down))
     Keyframe.drawButton('V',x+32,y,buttonRadius,math.pi,bit.band(state,ctlStateEnum.up))
     Keyframe.drawButton('V',x,y+32,buttonRadius,math.pi/2,bit.band(state,ctlStateEnum.left))
     Keyframe.drawButton('V',x+64,y+32,buttonRadius,-math.pi/2,bit.band(state,ctlStateEnum.right))
+
+    Keyframe.drawButton('V',x+128+32,y+64,buttonRadius,bit.band(state,ctlStateEnum.x))
+    Keyframe.drawButton('V',x+128+32,y,buttonRadius,math.pi,bit.band(state,ctlStateEnum.triangle))
+    Keyframe.drawButton('V',x+128,y+32,buttonRadius,math.pi/2,bit.band(state,ctlStateEnum.square))
+    Keyframe.drawButton('V',x+128+64,y+32,buttonRadius,-math.pi/2,bit.band(state,ctlStateEnum.circle))
     love.graphics.setColor(1,1,1)
 end
 
@@ -73,7 +82,10 @@ Keyframe.drawButton = function(text,x,y,r,a,state)
     love.graphics.circle(fill,x,y,r)
     local tx = x
     local ty = y
+    local c = {love.graphics.getColor()}
+    love.graphics.setColor(0.5,0.5,0.5)
     love.graphics.print(text,tx,ty,a,1,1,4,8)
+    love.graphics.setColor(c)
 end
 
 Keyframe.getCurrentKeyframe = function(film,forceCreate)
