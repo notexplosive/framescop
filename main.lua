@@ -42,6 +42,15 @@ function love.keypressed(key, scancode, isrepeat)
     if currentFilm then
         currentFilm.idleTimer = 0
 
+        if key == 'return' then
+            currentFilm.playRealTime = not currentFilm.playRealTime
+            if currentFilm.playRealTime then
+                printst('Play')
+            else
+                printst('Paused')
+            end
+        end
+
         if key == 'space' then
             Keyframe.new(currentFilm,currentFilm.playhead,0)
         end
@@ -69,8 +78,8 @@ function love.keypressed(key, scancode, isrepeat)
             if key == 'right' then
                 Keyframe.getCurrentKeyframe(currentFilm,true):flipState(ctlStateEnum.right)
             end
-        else
-            currentFilm.idleTimer = 0
+        else -- Not pressing control
+
             if key == 'right' then
                 currentFilm:movePlayheadTo(currentFilm.playhead + 1)
             end
@@ -78,11 +87,15 @@ function love.keypressed(key, scancode, isrepeat)
             if key == 'left' then
                 currentFilm:movePlayheadTo(currentFilm.playhead - 1)
             end
-
-            if key == 'd' then
-                currentFilm:movePlayheadTo(currentFilm.playhead + 24)
-            end
         end
+    end
+
+    local newState = Keyframe.getStateAtTime(currentFilm.playhead)
+    local oldState = bit.bor(Keyframe.getStateAtTime(currentFilm.playhead-1),ctlStateEnum.isKeyFrame)
+    -- Checks for redundant keyframes
+    if newState == oldState then
+        Keyframe.list[currentFilm.playhead] = nil
+        printst('Deleted Keyframe')
     end
 end
 

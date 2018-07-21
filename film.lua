@@ -24,6 +24,7 @@ Film.new = function(dirPath)
     self.cachedFrontier = 0
     self.preloading = false
     self.playRealTime = false
+    self.realTime = 0
 
     if self.title == nil or self.totalFrames == nil then
         printst('Data file at ' ..  dirPath .. ' is either corrupted or missing something')
@@ -40,8 +41,17 @@ Film.update = function(self,dt)
     self.idleTimer = self.idleTimer + dt
     self.preloading = false
 
+    -- Should be 24... right?
+    -- TODO: What the hell is happening here? This looks more correct for realtime
+    -- but 24 fps creates bad timestamps
+    local FPS = 15
+
     if self.playRealTime then
-        self.playhead = self.playhead + 1
+        self.idleTimer = 0
+        self.realTime = self.realTime + dt * FPS
+        self.playhead = math.floor(self.realTime) + 1
+    else
+        self.realTime = self.playhead
     end
 
     if not self.data[self.playhead + 10] then
@@ -86,6 +96,7 @@ end
 Film.draw = function(self)
     love.graphics.draw(self:getFrameImage(self.playhead))
     if self.warning then
+        self.playRealTime = false
         love.graphics.setColor(1,0,0)
         love.graphics.rectangle('line',0,0,love.graphics.getDimensions())
         love.graphics.setColor(1,1,1)
@@ -99,7 +110,6 @@ Film.draw = function(self)
 end
 
 Film.getFrameImage = function(self,index)
-    -- If we have the data, easy, load it!
     if self.data[index] then
         return self.data[index]
     end
@@ -124,7 +134,7 @@ Film.timeString = function(self,x)
         x = self.playhead
     end
     -- The binary most likely isn't at original framerate (24), so we scale up the "current frame" we're on
-    local realFPS = 24
+    local realFPS = 30
     local scale = realFPS / self.fps
     local seconds = (x)*(scale / realFPS / 2)
     local video_frame = (x-1) * scale

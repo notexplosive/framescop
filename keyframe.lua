@@ -117,6 +117,7 @@ Keyframe.getStateAtTime = function(frameIndex)
     local i = frameIndex
     while i > 0 do
         if Keyframe.list[i] then
+            -- Chop off the isKeyFrame bit so we know if this state comes from a keyframe or not
             return bit.band(Keyframe.list[i].state,bit.bnot(ctlStateEnum.isKeyFrame))
         end
         i = i - 1
