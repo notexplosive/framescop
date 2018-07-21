@@ -48,15 +48,19 @@ Keyframe.drawUI = function(film)
     if Keyframe.editMode then
         love.graphics.setColor(1,0.25,0.75)
     end
+
+    -- Up/Down/Left/Right are all just rotated V's. I'm lazy like that.
+    -- TODO: maybe make these images of a PS1 controller? Could be cute.
     Keyframe.drawButton('V',x+32,y+64,buttonRadius,0,bit.band(state,ctlStateEnum.down))
     Keyframe.drawButton('V',x+32,y,buttonRadius,math.pi,bit.band(state,ctlStateEnum.up))
     Keyframe.drawButton('V',x,y+32,buttonRadius,math.pi/2,bit.band(state,ctlStateEnum.left))
     Keyframe.drawButton('V',x+64,y+32,buttonRadius,-math.pi/2,bit.band(state,ctlStateEnum.right))
 
-    Keyframe.drawButton('V',x+128+32,y+64,buttonRadius,bit.band(state,ctlStateEnum.x))
-    Keyframe.drawButton('V',x+128+32,y,buttonRadius,math.pi,bit.band(state,ctlStateEnum.triangle))
-    Keyframe.drawButton('V',x+128,y+32,buttonRadius,math.pi/2,bit.band(state,ctlStateEnum.square))
-    Keyframe.drawButton('V',x+128+64,y+32,buttonRadius,-math.pi/2,bit.band(state,ctlStateEnum.circle))
+    
+    Keyframe.drawButton('x',x+128+32,y+64,buttonRadius,0,bit.band(state,ctlStateEnum.x))
+    Keyframe.drawButton('triangle',x+128+32,y,buttonRadius,0,bit.band(state,ctlStateEnum.triangle))
+    Keyframe.drawButton('square',x+128,y+32,buttonRadius,0,bit.band(state,ctlStateEnum.square))
+    Keyframe.drawButton('circle',x+128+64,y+32,buttonRadius,0,bit.band(state,ctlStateEnum.circle))
     love.graphics.setColor(1,1,1)
 end
 
@@ -88,6 +92,35 @@ Keyframe.addState = function(self,stateName)
 end
 
 Keyframe.drawButton = function(text,x,y,r,a,state)
+    local c = {love.graphics.getColor()}
+    if text ~= 'V' then
+        if text == 'triangle' then
+            love.graphics.setColor(0.5,1,0.5)
+            love.graphics.polygon('line',
+                x-r*2/3,    y+r*2/6,
+                x,          y-r*2/3,
+                x+r*2/3,    y+r*2/6    )
+        end
+
+        if text == 'square' then
+            love.graphics.setColor(1,0.7,0.7)
+            love.graphics.rectangle('line',x-r/2,y-r/2,r,r)
+        end
+
+        if text == 'circle' then
+            love.graphics.setColor(1,0.5,0.5)
+            love.graphics.circle('line',x,y,r*2/3)
+        end
+
+        if text == 'x' then
+            love.graphics.setColor(0.5,0.5,1)
+            love.graphics.line(x-r/2,y-r/2,x+r/2,y+r/2)
+            love.graphics.line(x-r/2,y+r/2,x+r/2,y-r/2)
+        end
+
+        text = ''
+    end
+
     local fill = 'line'
     if state and state > 0 then
         fill = 'fill'
@@ -95,10 +128,10 @@ Keyframe.drawButton = function(text,x,y,r,a,state)
     if a == nil then
         a = 0
     end
+    love.graphics.setColor(c)
     love.graphics.circle(fill,x,y,r)
     local tx = x
     local ty = y
-    local c = {love.graphics.getColor()}
     love.graphics.setColor(0.5,0.5,0.5)
     love.graphics.print(text,tx,ty,a,1,1,4,8)
     love.graphics.setColor(c)
