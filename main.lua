@@ -1,7 +1,9 @@
 require('status')
 local Film = require('film')
+local Timeline = require('timeline')
 
 currentFilm = nil
+timeline = nil
 
 function love.load(arg)
     
@@ -9,7 +11,9 @@ end
 
 function love.update(dt)
     if currentFilm then
+        print(currentFilm.playhead)
         currentFilm:update(dt)
+        timeline:update(dt)
     end
 
     updateStatusText(dt)
@@ -19,6 +23,7 @@ love.keyboard.setKeyRepeat(true)
 function love.keypressed(key, scancode, isrepeat)
     if key == 'space' and currentFilm == nil then
         currentFilm = Film.new('binaries/petscop8')
+        timeline = Timeline.new(currentFilm)
     end
 
     if currentFilm then
@@ -37,21 +42,33 @@ function love.keypressed(key, scancode, isrepeat)
     end
 end
 
+function love.mousemoved(x,y,dx,dy,isTouch)
+    if currentFilm then
+        currentFilm.idleTimer = 0
+    end
+end
+
+function love.mousepressed(x,y,button,isTouch)
+    -- Playhead capture
+    if button == 1 and timeline then
+        if timeline.isHover then
+            timeline.isPressed = true
+        end
+    end
+end
+
+function love.mousereleased(x,y,button,isTouch)
+    -- Playhead release
+    if button == 1 and timeline and timeline.isPressed then
+        timeline:onRelease(x)
+    end
+end
+
 function love.draw()
     if currentFilm then
         currentFilm:draw()
-        love.graphics.print(currentFilm:status(),0,584,0)
-
-        love.graphics.setColor(0, 1, 0, 0.4)
-        love.graphics.rectangle('fill',0,love.graphics.getHeight()-32,love.graphics.getWidth()*currentFilm.playhead/currentFilm.totalFrames,32)
-        love.graphics.setColor(0, 1, 1, 0.1)
-        love.graphics.rectangle('fill',
-            love.graphics.getWidth()*currentFilm.playhead/currentFilm.totalFrames,
-            love.graphics.getHeight()-32,
-            love.graphics.getWidth()*(currentFilm.cachedFrontier-currentFilm.playhead)/currentFilm.totalFrames,
-            32)
-        love.graphics.setColor(1, 1, 1, 1)
-        love.graphics.rectangle('line',0,love.graphics.getHeight()-32,love.graphics.getWidth(),32)
+        love.graphics.print(currentFilm:status(),4,love.graphics.getHeight()-48,0)
+        timeline:draw()
     end
     love.graphics.print(StatusText)
     love.graphics.circle('line',love.graphics.getWidth()-32,32,math.random(28,32), math.random(5,20))

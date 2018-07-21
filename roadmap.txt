@@ -1,0 +1,16 @@
+Version 1.0
++Simple frame-by-frame playback
++Requires binaries to work (provided by me)
++Not terribly memory efficient
+	+Frequent read/write calls just to get normal-ish playback
++Can mark keyframes with controller state
+	+Frequent saves in case of crash
++Can save keyframe data to a CSV for later comparison and visualization
+
+todo:
+Timeline scrubbing
+Choosing a file to upload
+
+Future Versions:
++Multivideo playback
++Realtime playback (if people want it?)

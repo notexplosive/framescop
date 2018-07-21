@@ -23,6 +23,7 @@ Film.new = function(dirPath)
     self.idleTimer = 0
     self.framesInMemory = 0
     self.cachedFrontier = 0
+    self.preloading = false
 
     if self.title == nil or self.totalFrames == nil then
         printst('Data file at ' ..  dirPath .. ' is either corrupted or missing something')
@@ -37,7 +38,8 @@ end
 Film.update = function(self,dt)
     -- This ticks up every frame but gets reset when a key is pressed
     self.idleTimer = self.idleTimer + dt
-    
+    self.preloading = false
+
     if not self.data[self.playhead + 10] then
         printst('Loading more frames...')
         self.warning = true
@@ -57,11 +59,13 @@ Film.update = function(self,dt)
     if self.idleTimer > 1 then
         if self:h_loadAt(self:h_nextUnloadedFromPlayhead(),14) then
             printst('Loading ahead...')
+            self.preloading = true
         end
     end
 
     if not self.data[self.playhead] then
         -- How many frames back to we render if available?
+        -- TODO: extract this into a constant?
         local backFrames = 8
         if self.playhead < backFrames then
             backFrames = self.playhead
@@ -69,6 +73,7 @@ Film.update = function(self,dt)
         self:h_loadAt(self.playhead-backFrames,24)
     end
 
+    -- TODO: This could be a lot smarter.
     if self.framesInMemory > 400 then
         self:h_clearData()
     end
@@ -78,6 +83,12 @@ Film.draw = function(self)
     love.graphics.draw(self:getFrameImage(self.playhead))
     if self.warning then
         love.graphics.setColor(1,0,0)
+        love.graphics.rectangle('line',0,0,love.graphics.getDimensions())
+        love.graphics.setColor(1,1,1)
+    end
+
+    if self.preloading then
+        love.graphics.setColor(0,1,0)
         love.graphics.rectangle('line',0,0,love.graphics.getDimensions())
         love.graphics.setColor(1,1,1)
     end
@@ -103,7 +114,7 @@ Film.status = function(self)
     -- The binary most likely isn't at original framerate (24), so we scale up the "current frame" we're on
     local realFPS = 24
     local scale = realFPS / self.fps
-    local seconds = (self.playhead)*(realFPS / self.fps / realFPS / 2)
+    local seconds = (self.playhead)*(scale / realFPS / 2)
     local video_frame = (self.playhead-1) * scale
     
     return 'time: ' .. string.format("%02d",seconds/60) .. ':'
