@@ -4,6 +4,9 @@ CURRENT_AUTHOR = ''
 LOVEdefaultFont = love.graphics:getFont()
 BigFont = love.graphics.newFont(24)
 
+icon = love.image.newImageData("icon.png")
+success = love.window.setIcon( icon )
+
 require('global')
 require('status')
 require('loadfile')

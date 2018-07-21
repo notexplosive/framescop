@@ -56,6 +56,7 @@ Timeline.draw = function(self)
 
     -- keyframes (WARNING: this might cause lag, getAll is a huge o(n) traversal)
     local keyframes = Keyframe.getAll(self.film)
+    love.graphics.setColor(1,1,1,.25)
     for i,kf in ipairs(keyframes) do
         local x = kf.time/self.film.totalFrames * love.graphics.getWidth()
         local y1 = love.graphics.getHeight()-32
