@@ -8,6 +8,9 @@ Film.__index = Film
 
 Film.new = function(dirPath)
     local self = {}
+    FILE_NAME = dirPath
+    updateWindowTitle()
+
     setmetatable(self, Film)
 
     self.playhead = 1

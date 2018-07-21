@@ -12,6 +12,10 @@ todo:
 Saving input keyframes to disk
 Choosing a file to upload
 Make all the binaries
+Add support for logging
+	face buttons
+	triggers
+	confirm/deny
 
 Future Versions:
 +Multivideo playback

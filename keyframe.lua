@@ -71,6 +71,13 @@ Keyframe.flipState = function(self,stateRegister)
     end
 end
 
+-- Returns true if keyframe has that state
+-- TODO: we can get much cleaner code if we use this more.
+-- currently lots of places that have ugly nested bits functions
+Keyframe.hasState = function(self,stateName)
+    return bit.band(ctlStateEnum[stateName],self.state) > 0
+end
+
 Keyframe.drawButton = function(text,x,y,r,a,state)
     local fill = 'line'
     if state and state > 0 then
@@ -110,11 +117,12 @@ end
 -- Returns a sorted array of all keyframes
 -- Traverses through the entire timeline to get it.
 -- O(n) sort for medium-large n, thoughts?
-Keyframe.getAll = function()
+Keyframe.getAll = function(film)
     list = {}
-    for i=1,self.film.totalFrames do
-        if Keyframe.list[i] then
+    for i=1,film.totalFrames do
+        if Keyframe.list[i] ~= nil then
             list[#list+1] = Keyframe.list[i]
+            Keyframe.list[i].time = i
         end
     end
     return list
@@ -136,6 +144,36 @@ Keyframe.getStateAtTime = function(frameIndex)
     end
 
     return 0
+end
+
+Keyframe.serializeList = function(film)
+    local buttonNames = {'up','down','left','right'}
+    local text = 'Time,Up,Down,Left,Right'
+    local keyframes = Keyframe.getAll(film)
+    for i=1,#keyframes do
+        local keyframe = keyframes[i]
+        -- note: time was an added field in getAll
+        local row = keyframe.time .. ','
+        for i=1,#buttonNames do
+            local buttonName = buttonNames[i]
+            local b = keyframe:hasState(buttonName)
+            if b then
+                row = row .. 'true,'
+            else
+                row = row .. 'false,'
+            end
+        end
+        text = text .. '\n' .. row
+    end
+
+    local filename = FILE_NAME .. '_input_track' .. '.csv'
+    local file,err = love.filesystem.newFile(filename,'w')
+    print(err)
+    file.write(text)
+    if not success then
+        printst(message)
+    end
+    return text
 end
 
 return Keyframe

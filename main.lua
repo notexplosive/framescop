@@ -1,4 +1,5 @@
-APP_NAME = 'PetScope V1.0'
+FILE_NAME = 'empty'
+APP_NAME = 'Framescop V1.0'
 
 require('status')
 local ctlStateEnum = require('controller_state')
@@ -12,7 +13,9 @@ local BigFont = love.graphics.newFont(24)
 currentFilm = nil
 timeline = nil
 
-love.window.setTitle(APP_NAME .. ' by NotExplosive')
+function updateWindowTitle()
+    love.window.setTitle(APP_NAME .. ' by NotExplosive - ' .. FILE_NAME)
+end
 love.window.updateMode(800,600,{resizable=true})
 
 function love.load(arg)
@@ -24,8 +27,6 @@ function love.update(dt)
     if currentFilm then
         currentFilm:update(dt)
         timeline:update(dt)
-
-        
     end
 
     if love.keyboard.isDown('lctrl') or love.keyboard.isDown('rctrl') then
@@ -56,6 +57,10 @@ function love.keypressed(key, scancode, isrepeat)
         end
 
         if love.keyboard.isDown('lctrl') or love.keyboard.isDown('rctrl') then
+            if key == 's' then
+                print(Keyframe.serializeList(currentFilm))
+                printst('Saved!')
+            end
             if key == 'space' then
                 if Keyframe.list[currentFilm.playhead] then
                     printst('keyframe deleted')
