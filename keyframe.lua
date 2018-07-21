@@ -3,7 +3,7 @@ local ctlStateEnum = require('controller_state')
 local Keyframe = {}
 Keyframe.__index = Keyframe
 
-Keyframe.list = {}
+Keyframe.list = KEYFRAME_LIST_GLOBAL
 Keyframe.x = 364
 Keyframe.y = love.graphics.getHeight() - 128 - 32
 Keyframe.editMode = false
@@ -20,7 +20,7 @@ Keyframe.new = function(film,frameIndex,state)
 
     self.film = film
     -- 1 = isKeyFrame
-    self.state = bit.bor(1,state)
+    self.state = bit.bor(state,1)
 
     -- Merge with that keyframe
     if Keyframe.list[frameIndex] then
@@ -75,7 +75,16 @@ end
 -- TODO: we can get much cleaner code if we use this more.
 -- currently lots of places that have ugly nested bits functions
 Keyframe.hasState = function(self,stateName)
+    if not ctlStateEnum[stateName] then
+        return false
+    end
     return bit.band(ctlStateEnum[stateName],self.state) > 0
+end
+
+Keyframe.addState = function(self,stateName)
+    if ctlStateEnum[stateName] then
+        self.state = bit.bor(ctlStateEnum[stateName],self.state)
+    end
 end
 
 Keyframe.drawButton = function(text,x,y,r,a,state)
@@ -147,13 +156,16 @@ Keyframe.getStateAtTime = function(frameIndex)
 end
 
 Keyframe.serializeList = function(film)
-    local buttonNames = {'up','down','left','right'}
-    local text = 'Time,Up,Down,Left,Right'
+    local buttonNames = ctlStateEnum.ALL_BUTTONS
+    local text = 'time,'
+    for i=1,#buttonNames do
+        text = text .. buttonNames[i] .. ','
+    end
     local keyframes = Keyframe.getAll(film)
     for i=1,#keyframes do
         local keyframe = keyframes[i]
         -- note: time was an added field in getAll
-        local row = keyframe.time .. ','
+        local row = film:timeString(keyframe.time) .. ','
         for i=1,#buttonNames do
             local buttonName = buttonNames[i]
             local b = keyframe:hasState(buttonName)
@@ -166,14 +178,33 @@ Keyframe.serializeList = function(film)
         text = text .. '\n' .. row
     end
 
-    local filename = FILE_NAME .. '_input_track' .. '.csv'
-    local file,err = love.filesystem.newFile(filename,'w')
-    print(err)
-    file.write(text)
-    if not success then
-        printst(message)
-    end
+    local filename = film:getTrackPath()
+    local file,err = love.filesystem.write(filename, text)
+
+    printst(film:getFullTrackPath() .. ' saved.')
     return text
+end
+
+Keyframe.deserialize = function(film)
+    if love.filesystem.getInfo(film:getTrackPath()) then
+        local data = love.filesystem.read(film:getTrackPath())
+        local lines = data:split('\n')
+        local columnNames = lines[1]:split(',')
+
+        for i=2,#lines do
+            local line = lines[i]:split(',')
+            local state = 1
+            print(unpack(line))
+            for j=1,#columnNames do
+                columnName = columnNames[j]
+                if line[j] == 'true' then
+                    state = bit.bor(state,ctlStateEnum[columnName])
+                end
+            end
+
+            Keyframe.new(film,film:timeStringToFrames(line[1]),state)
+        end
+    end
 end
 
 return Keyframe

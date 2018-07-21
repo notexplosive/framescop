@@ -1,4 +1,6 @@
 local ctlStateEnum = {}
+-- This is used for serialization, these are the columns of the csv file
+ctlStateEnum.ALL_BUTTONS = {'up','down','left','right','x','circle','triangle','sqaure'}
 
 ctlStateEnum.isKeyFrame = 1
 ctlStateEnum.up = 2

@@ -1,6 +1,7 @@
 FILE_NAME = 'empty'
 APP_NAME = 'Framescop V1.0'
 
+require('global')
 require('status')
 local ctlStateEnum = require('controller_state')
 local Film = require('film')
@@ -56,16 +57,16 @@ function love.keypressed(key, scancode, isrepeat)
             Keyframe.new(currentFilm,currentFilm.playhead,0)
         end
 
+        if key == 'delete' then
+            if Keyframe.list[currentFilm.playhead] then
+                printst('keyframe deleted')
+                Keyframe.list[currentFilm.playhead] = nil
+            end
+        end
+
         if love.keyboard.isDown('lctrl') or love.keyboard.isDown('rctrl') then
             if key == 's' then
                 print(Keyframe.serializeList(currentFilm))
-                printst('Saved!')
-            end
-            if key == 'space' then
-                if Keyframe.list[currentFilm.playhead] then
-                    printst('keyframe deleted')
-                    Keyframe.list[currentFilm.playhead] = nil
-                end
             end
 
             if key == 'up' then
@@ -143,6 +144,9 @@ function love.draw()
         Keyframe.drawUI(currentFilm)
     end
 
+
+    -- Keyframe timeline pane
+    love.graphics.print('img:'..currentFilm.playhead,128,love.graphics.getHeight() - 128 - love.graphics.getFont():getHeight() - 2)
     love.graphics.setFont(BigFont)
     love.graphics.print(currentFilm:timeString(),10,love.graphics.getHeight() - 128 - love.graphics.getFont():getHeight())
     for i=-9,10 do

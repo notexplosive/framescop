@@ -1,17 +1,23 @@
 -- We're calling this "Film" because it's a series of static images played back
 -- to make it look like it's a contiguous video.
 
+require('stringutil')
 local readFile = require('readfile')
+local Keyframe = require('keyframe')
+
+-- The binary most likely isn't at original framerate (30), so we scale up the "current frame" we're on
+local realFPS = 30
 
 local Film = {}
 Film.__index = Film
 
 Film.new = function(dirPath)
     local self = {}
-    FILE_NAME = dirPath
-    updateWindowTitle()
-
     setmetatable(self, Film)
+
+    local split = dirPath:split('/')
+    FILE_NAME = split[#split]
+    updateWindowTitle()
 
     self.playhead = 1
 
@@ -35,6 +41,8 @@ Film.new = function(dirPath)
 
     self.data = {}
     self:h_loadAt(1,30)
+
+    Keyframe.deserialize(self)
 
     return self
 end
@@ -138,13 +146,33 @@ Film.timeString = function(self,x)
     if x == nil then 
         x = self.playhead
     end
-    -- The binary most likely isn't at original framerate (30), so we scale up the "current frame" we're on
-    local realFPS = 30
     local video_frame = (x-1) * (realFPS / self.fps)
     local seconds = math.floor(video_frame/realFPS) --(x)*(scale / realFPS)
     return string.format("%02d",seconds/60) .. ':'
     .. string.format("%02d",seconds%60) .. ';' 
     .. string.format("%02d",video_frame%realFPS) .. '\t'
+end
+
+Film.timeStringToFrames = function(self,timeString)
+    if timeString == nil then 
+        timeString = self:timeString()
+    end
+    local tsSplitOnColon = timeString:split(':')
+    local minutes = tsSplitOnColon[1]
+    local seconds = tsSplitOnColon[2]:split(';')[1] + minutes * 60
+    local video_frame = tonumber(timeString:split(';')[2]) / 2
+    
+    local frames = seconds * self.fps + video_frame + 1
+    print('read ' .. timeString .. ' as ' .. frames)
+    return frames
+end
+
+Film.getTrackPath = function(self)
+    return FILE_NAME .. '_input_track' .. '.csv'
+end
+
+Film.getFullTrackPath = function(self)
+    return love.filesystem.getAppdataDirectory() .. '/' .. self:getTrackPath()
 end
 
 --- HELPER FUNCTIONS BELOW THIS POINT ---
