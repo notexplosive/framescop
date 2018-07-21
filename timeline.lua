@@ -64,21 +64,6 @@ Timeline.draw = function(self)
         playheadWidth,
         self.height)
     love.graphics.setColor(1,1,1)
-
-    -- Display current time
-    if self.isPressed then
-        local oldFont = love.graphics.getFont()
-        love.graphics.setFont(love.graphics.newFont(48))
-        local timeString = self.film:timeString(self:getFrameIndex(currentPlayheadPosition))
-        local textwidth = love.graphics.getFont():getWidth(timeString)
-        local textheight = love.graphics.getFont():getHeight()
-        love.graphics.print(
-            timeString,
-            love.graphics.getWidth()/2-textwidth/2,
-            love.graphics.getHeight()/2-textheight
-        )
-        love.graphics.setFont(oldFont)
-    end
 end
 
 -- Is hovering over playhead?

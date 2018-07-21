@@ -7,7 +7,6 @@ local Film = {}
 Film.__index = Film
 
 Film.new = function(dirPath)
-    printst('Loading new video...')
     local self = {}
     setmetatable(self, Film)
 
@@ -24,6 +23,7 @@ Film.new = function(dirPath)
     self.framesInMemory = 0
     self.cachedFrontier = 0
     self.preloading = false
+    self.playRealTime = false
 
     if self.title == nil or self.totalFrames == nil then
         printst('Data file at ' ..  dirPath .. ' is either corrupted or missing something')
@@ -39,6 +39,10 @@ Film.update = function(self,dt)
     -- This ticks up every frame but gets reset when a key is pressed
     self.idleTimer = self.idleTimer + dt
     self.preloading = false
+
+    if self.playRealTime then
+        self.playhead = self.playhead + 1
+    end
 
     if not self.data[self.playhead + 10] then
         printst('Loading more frames...')

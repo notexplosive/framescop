@@ -1,18 +1,37 @@
+APP_NAME = 'PetScope V1.0'
+
 require('status')
+local ctlStateEnum = require('controller_state')
 local Film = require('film')
 local Timeline = require('timeline')
+local Keyframe = require('keyframe')
+
+local LOVEdefaultFont = love.graphics:getFont()
+local BigFont = love.graphics.newFont(24)
 
 currentFilm = nil
 timeline = nil
 
+love.window.setTitle(APP_NAME .. ' by NotExplosive')
+love.window.updateMode(800,600,{resizable=true})
+
 function love.load(arg)
-    
+    currentFilm = Film.new('binaries/petscop8')
+    timeline = Timeline.new(currentFilm)
 end
 
 function love.update(dt)
     if currentFilm then
         currentFilm:update(dt)
         timeline:update(dt)
+
+        
+    end
+
+    if love.keyboard.isDown('lctrl') or love.keyboard.isDown('rctrl') then
+        Keyframe.editMode = true
+    else
+        Keyframe.editMode = false
     end
 
     updateStatusText(dt)
@@ -20,23 +39,49 @@ end
 
 love.keyboard.setKeyRepeat(true)
 function love.keypressed(key, scancode, isrepeat)
-    if key == 'space' and currentFilm == nil then
-        currentFilm = Film.new('binaries/petscop8')
-        timeline = Timeline.new(currentFilm)
-    end
-
     if currentFilm then
         currentFilm.idleTimer = 0
-        if key == 'right' then
-            currentFilm:movePlayheadTo(currentFilm.playhead + 1)
+
+        if key == 'space' then
+            Keyframe.new(currentFilm,currentFilm.playhead,0)
         end
 
-        if key == 'left' then
-            currentFilm:movePlayheadTo(currentFilm.playhead - 1)
-        end
+        if love.keyboard.isDown('lctrl') or love.keyboard.isDown('rctrl') then
+            if key == 'space' then
+                if Keyframe.list[currentFilm.playhead] then
+                    printst('keyframe deleted')
+                    Keyframe.list[currentFilm.playhead] = nil
+                end
+            end
 
-        if key == 'd' then
-            currentFilm:movePlayheadTo(currentFilm.playhead + 24)
+            if key == 'up' then
+                Keyframe.getCurrentKeyframe(currentFilm,true):flipState(ctlStateEnum.up)
+            end
+
+            if key == 'down' then
+                Keyframe.getCurrentKeyframe(currentFilm,true):flipState(ctlStateEnum.down)
+            end
+
+            if key == 'left' then
+                Keyframe.getCurrentKeyframe(currentFilm,true):flipState(ctlStateEnum.left)
+            end
+
+            if key == 'right' then
+                Keyframe.getCurrentKeyframe(currentFilm,true):flipState(ctlStateEnum.right)
+            end
+        else
+            currentFilm.idleTimer = 0
+            if key == 'right' then
+                currentFilm:movePlayheadTo(currentFilm.playhead + 1)
+            end
+
+            if key == 'left' then
+                currentFilm:movePlayheadTo(currentFilm.playhead - 1)
+            end
+
+            if key == 'd' then
+                currentFilm:movePlayheadTo(currentFilm.playhead + 24)
+            end
         end
     end
 end
@@ -70,11 +115,46 @@ function love.mousereleased(x,y,button,isTouch)
 end
 
 function love.draw()
+    love.graphics.setFont(LOVEdefaultFont)
+
     if currentFilm then
         currentFilm:draw()
         love.graphics.print(currentFilm:status(),4,love.graphics.getHeight()-48,0)
         timeline:draw()
+        
+        Keyframe.drawUI(currentFilm)
     end
+
+    love.graphics.setFont(BigFont)
+    love.graphics.print(currentFilm:timeString(),10,love.graphics.getHeight() - 128 - love.graphics.getFont():getHeight())
+    for i=-9,10 do
+        love.graphics.rectangle('line',10*i + 100,love.graphics.getHeight() - 128,10,10)
+
+        -- default colors
+        love.graphics.setColor(1,.25,0)
+        if (currentFilm.playhead + i) % 4 == 0 then
+            love.graphics.setColor(.6,.2,0)
+        end
+
+        if Keyframe.list[currentFilm.playhead+i] then
+            love.graphics.setColor(0,1,0)
+        end
+
+        if i == 0 then
+            love.graphics.setColor(1,1,1)
+            if Keyframe.list[currentFilm.playhead+i] then
+                love.graphics.setColor(0,0,1)
+            end
+        end
+
+        if currentFilm.playhead + i < 1 then
+            love.graphics.setColor(0,0,0)
+        end
+
+        love.graphics.rectangle('fill',10*i + 100,love.graphics.getHeight() - 128,10,10)
+        love.graphics.setColor(1,1,1)
+    end
+
+    love.graphics.setFont(BigFont)
     love.graphics.print(StatusText)
-    love.graphics.circle('line',love.graphics.getWidth()-32,32,math.random(28,32), math.random(5,20))
 end
