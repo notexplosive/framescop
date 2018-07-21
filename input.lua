@@ -1,7 +1,10 @@
 local ctlStateEnum = require('controller_state')
 local Keyframe = require('keyframe')
 
+-- TODO: extract text box related code into its own file
+-- This would include globals like cursorTimer and TEXT_BOX_CURSOR
 CURRENT_TEXT_BOX = {}
+TEXT_BOX_CURSOR = '|'
 
 CURRENT_TEXT_BOX.clear = function()
     local ret = CURRENT_TEXT_BOX.body
@@ -21,12 +24,18 @@ CURRENT_TEXT_BOX.clear()
 --- KEYBOARD BEHAVIOR ---
 love.keyboard.setKeyRepeat(true)
 function love.textinput( text )
+    -- omit newline
+    if text == '\n' then
+        return
+    end
+
     if CURRENT_TEXT_BOX.on then
         CURRENT_TEXT_BOX.body = CURRENT_TEXT_BOX.body .. text
     end
 end
 
 function love.keypressed(key, scancode, isrepeat)
+    cursorTimer = 0
     if CURRENT_TEXT_BOX.on then
         if key == 'return' then
             CURRENT_TEXT_BOX.submit()
@@ -108,9 +117,9 @@ end
 --- MOUSE BEHAVIOR ---
 function love.mousereleased(x,y,button,isTouch)
     -- Playhead release
-    if button == 1 and timeline then
-        if timeline.isPressed then
-            timeline:onRelease(x)
+    if button == 1 and currentFilm then
+        if currentFilm.timeline.isPressed then
+            currentFilm.timeline:onRelease(x)
         end
     end
 end
@@ -123,12 +132,12 @@ end
 
 function love.mousepressed(x,y,button,isTouch)
     -- Playhead capture
-    if button == 1 and timeline then
-        if timeline:isHover() then
-            timeline.isPressed = true
+    if button == 1 and currentFilm then
+        if currentFilm.timeline:isHover() then
+            currentFilm.timeline.isPressed = true
         else
-            if timeline:isFullHover() then
-                timeline:onRelease(x)
+            if currentFilm.timeline:isFullHover() then
+                currentFilm.timeline:onRelease(x)
             end
         end
     end

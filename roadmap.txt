@@ -9,15 +9,17 @@ Version 1.0
 +Realtime playback
 
 todo:
-Choosing a file to upload
 Make all the binaries
 Add support for logging:
 	face buttons
 	triggers
 	confirm/deny
 autosave
+eliminate need for the datafile to know how many frames there are. we can just count
 
 Future Versions:
++Support varied framerates
 +Multivideo playback
++Multiple input tracks at once (do we really want this? might make the UI too confusing)
 +Audio
 +Move keyframes after they've moved

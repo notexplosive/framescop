@@ -42,7 +42,7 @@ Film.new = function(dirPath)
     end
 
     self.data = {}
-    self:h_loadAt(1,30)
+    self:h_loadAt(1,60)
 
     Keyframe.deserialize(self)
 
@@ -94,7 +94,7 @@ Film.update = function(self,dt)
         if self.playhead < backFrames then
             backFrames = self.playhead
         end
-        self:h_loadAt(self.playhead-backFrames,24)
+        self:h_loadAt(self.playhead-backFrames,15)
     end
 
     -- TODO: This could be a lot smarter.
@@ -148,13 +148,15 @@ Film.status = function(self)
     .. self.framesInMemory .. ' images in memory' .. '\t'
 end
 
+-- TODO: this conversion doesn't quite work right if the framerate isn't 15
+-- This isn't a huge problem because all of the binaries will be 15 fps
 Film.timeString = function(self,x)
     if x == nil then 
         x = self.playhead
     end
     local video_frame = (x-1) * (realFPS / self.fps)
-    local seconds = math.floor(video_frame/realFPS) --(x)*(scale / realFPS)
-    return string.format("%02d",seconds/60) .. ':'
+    local seconds = math.floor(video_frame/realFPS)
+    return string.format("%02d",math.floor(seconds/60)) .. ':'
     .. string.format("%02d",seconds%60) .. ';' 
     .. string.format("%02d",video_frame%realFPS)
 end

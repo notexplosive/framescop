@@ -1,3 +1,5 @@
+local Keyframe = require('keyframe')
+
 local Timeline = {}
 Timeline.__index = Timeline
 
@@ -7,7 +9,7 @@ Timeline.new = function(film)
 
     self.film = film
     -- playhead width and height
-    self.width = 16
+    self.width = 8
     self.height = 32
 
     self.isPressed = false
@@ -25,10 +27,18 @@ Timeline.draw = function(self)
     local currentViewedFramePostion = self.x
     -- Playhead can move via mouse, currentViwedPosition cannot.
     local currentPlayheadPosition = self.x
-    
+
     if self.isPressed then
         currentPlayheadPosition = love.mouse.getX()
     end
+
+    love.graphics.setFont(BigFont)
+    love.graphics.print(
+        currentFilm:timeString(currentPlayheadPosition/love.graphics.getWidth() * self.film.totalFrames),
+        10,
+        love.graphics.getHeight() - 128 - love.graphics.getFont():getHeight())
+    love.graphics.setFont(LOVEdefaultFont)
+
     love.graphics.setColor(0, 1, 0, 0.4)
     love.graphics.rectangle('fill',0,love.graphics.getHeight()-32,love.graphics.getWidth()*self.film.playhead/self.film.totalFrames,32)
     if self:isFullHover() and not self:isHover() and not love.mouse.isDown(1) then
@@ -43,6 +53,15 @@ Timeline.draw = function(self)
         self.height)
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.rectangle('line',0,love.graphics.getHeight()-32,love.graphics.getWidth(),32)
+
+    -- keyframes (WARNING: this might cause lag, getAll is a huge o(n) traversal)
+    local keyframes = Keyframe.getAll(self.film)
+    for i,kf in ipairs(keyframes) do
+        local x = kf.time/self.film.totalFrames * love.graphics.getWidth()
+        local y1 = love.graphics.getHeight()-32
+        local y2 = love.graphics.getHeight()
+        love.graphics.line(x,y1,x,y2)
+    end
 
     -- playhead
     local playheadWidth = self.width
@@ -93,6 +112,7 @@ end
 -- Called when the playhead was just dragged somewhere
 Timeline.onRelease = function(self,x)
     local frameIndex = self:getFrameIndex(x)
+    self.cachedFrontier = 0
     self.isPressed = false
     --self.film:h_clearData()
     self.film:movePlayheadTo(math.floor(frameIndex))
