@@ -8,7 +8,11 @@ Keyframe.x = 364
 Keyframe.y = love.graphics.getHeight() - 128 - 32
 Keyframe.editMode = false
 
-Keyframe.new = function(film,frameIndex,state)
+Keyframe.new = function(film,frameIndex,state,author)
+    if author == nil then
+        author = CURRENT_AUTHOR
+    end
+
     if state == 0 then
         printst('Empty keyframe created')
     else
@@ -19,8 +23,10 @@ Keyframe.new = function(film,frameIndex,state)
     setmetatable(self, Keyframe)
 
     self.film = film
-    -- 1 = isKeyFrame
+
+    -- Far right bit is the isKeyFrame flag.
     self.state = bit.bor(state,1)
+    self.author = author
 
     -- Merge with that keyframe
     if Keyframe.list[frameIndex] then
@@ -39,7 +45,9 @@ Keyframe.drawUI = function(film)
 
     local state = Keyframe.getStateAtTime(film.playhead)
 
+    -- State's far right bit will be 1 if this is an actual keyframe and not just fetching most recent
     if state % 2 == 1 then
+        love.graphics.print('author: ' .. Keyframe.getCurrentKeyframe(film).author,Keyframe.x-16,Keyframe.y-32)
         love.graphics.rectangle('line',Keyframe.x-16,Keyframe.y-16,256,128)
     end
 
@@ -141,7 +149,7 @@ Keyframe.getCurrentKeyframe = function(film,forceCreate)
     local kf = Keyframe.list[film.playhead]
     if kf == nil then
         if forceCreate then
-            return Keyframe.new(film,film.playhead,Keyframe.getStateAtTime(film.playhead))
+            return Keyframe.new(film,film.playhead,Keyframe.getStateAtTime(film.playhead),CURRENT_AUTHOR)
         end
         local i = film.playhead
         while i > 0 do
@@ -194,6 +202,7 @@ Keyframe.serializeList = function(film)
     for i=1,#buttonNames do
         text = text .. buttonNames[i] .. ','
     end
+    text = text .. 'author'
     local keyframes = Keyframe.getAll(film)
     for i=1,#keyframes do
         local keyframe = keyframes[i]
@@ -207,7 +216,12 @@ Keyframe.serializeList = function(film)
             else
                 row = row .. 'false,'
             end
+
+            if i == #buttonNames then
+                row = row .. keyframe.author
+            end
         end
+
         text = text .. '\n' .. row
     end
 
@@ -219,22 +233,32 @@ Keyframe.serializeList = function(film)
 end
 
 Keyframe.deserialize = function(film)
-    if love.filesystem.getInfo(film:getTrackPath()) then
+    local info = love.filesystem.getInfo(film:getTrackPath())
+    if info and info.size > 0 then
         local data = love.filesystem.read(film:getTrackPath())
         local lines = data:split('\n')
         local columnNames = lines[1]:split(',')
+        local author = 'unknown'
 
         for i=2,#lines do
             local line = lines[i]:split(',')
             local state = 1
             for j=1,#columnNames do
                 columnName = columnNames[j]
-                if line[j] == 'true' then
+                if line[j] and line[j]:lower() == 'true' then
                     state = bit.bor(state,ctlStateEnum[columnName])
+                end
+
+                -- Author's column
+                if j == #columnNames then
+                    if line[j] then
+                        author = line[j]
+                    end
                 end
             end
 
-            Keyframe.new(film,film:timeStringToFrames(line[1]),state)
+            print(state)
+            Keyframe.new(film,film:timeStringToFrames(line[1]),state,author)
         end
     end
 end

@@ -1,5 +1,6 @@
 FILE_NAME = 'empty'
 APP_NAME = 'Framescop V1.0'
+CURRENT_AUTHOR = ''
 
 require('global')
 require('status')
@@ -12,18 +13,28 @@ local Keyframe = require('keyframe')
 local LOVEdefaultFont = love.graphics:getFont()
 local BigFont = love.graphics.newFont(24)
 
+-- todo: make this local, fix where that breaks.
 currentFilm = nil
 
+-- Window setup
 function updateWindowTitle()
     local title = APP_NAME .. ' by NotExplosive'
     love.window.setTitle(title .. ' - ' .. FILE_NAME)
 end
+
 updateWindowTitle()
+
 love.window.updateMode(800,600,{resizable=true})
+
 
 function love.load(arg)
     -- Build working dir cache
     loadWorkingDirectory()
+
+    local author = love.filesystem.read('author')
+    if author then
+        CURRENT_AUTHOR = author
+    end
 end
 
 function love.update(dt)
@@ -40,6 +51,19 @@ function love.draw()
     love.graphics.setFont(LOVEdefaultFont)
 
     if not currentFilm then
+        if CURRENT_AUTHOR == '' then
+            CURRENT_TEXT_BOX.on = true
+            love.graphics.setFont(BigFont)
+            love.graphics.print("Please enter the name you want to be credited as:\n" .. CURRENT_TEXT_BOX.body)
+
+            if CURRENT_TEXT_BOX.submitted then
+                CURRENT_AUTHOR = CURRENT_TEXT_BOX.clear()
+                love.filesystem.write('author',CURRENT_AUTHOR)
+            end
+
+            return
+        end
+
         local binaries = loadWorkingDirectory()
         for i,obj in ipairs(binaries) do
             if love.keyboard.isDown(i) then

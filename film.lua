@@ -144,7 +144,7 @@ Film.movePlayheadTo = function(self,index)
 end
 
 Film.status = function(self)
-    return 'time: ' .. self:timeString()
+    return 'time: ' .. self:timeString() .. '\t'
     .. self.framesInMemory .. ' images in memory' .. '\t'
 end
 
@@ -156,13 +156,14 @@ Film.timeString = function(self,x)
     local seconds = math.floor(video_frame/realFPS) --(x)*(scale / realFPS)
     return string.format("%02d",seconds/60) .. ':'
     .. string.format("%02d",seconds%60) .. ';' 
-    .. string.format("%02d",video_frame%realFPS) .. '\t'
+    .. string.format("%02d",video_frame%realFPS)
 end
 
 Film.timeStringToFrames = function(self,timeString)
     if timeString == nil then 
         timeString = self:timeString()
     end
+
     local tsSplitOnColon = timeString:split(':')
     local minutes = tsSplitOnColon[1]
     local seconds = tsSplitOnColon[2]:split(';')[1] + minutes * 60

@@ -1,9 +1,46 @@
 local ctlStateEnum = require('controller_state')
 local Keyframe = require('keyframe')
 
+CURRENT_TEXT_BOX = {}
+
+CURRENT_TEXT_BOX.clear = function()
+    local ret = CURRENT_TEXT_BOX.body
+    CURRENT_TEXT_BOX.on = false
+    CURRENT_TEXT_BOX.body = ''
+    CURRENT_TEXT_BOX.submitted = false
+    return ret
+end
+
+CURRENT_TEXT_BOX.submit = function()
+    -- Flags itself as submitted, someone else needs to listen for this and clear
+    CURRENT_TEXT_BOX.submitted = true
+end
+
+CURRENT_TEXT_BOX.clear()
+
 --- KEYBOARD BEHAVIOR ---
 love.keyboard.setKeyRepeat(true)
+function love.textinput( text )
+    if CURRENT_TEXT_BOX.on then
+        CURRENT_TEXT_BOX.body = CURRENT_TEXT_BOX.body .. text
+    end
+end
+
 function love.keypressed(key, scancode, isrepeat)
+    if CURRENT_TEXT_BOX.on then
+        if key == 'return' then
+            CURRENT_TEXT_BOX.submit()
+        end
+
+        if key == 'backspace' then
+            CURRENT_TEXT_BOX.body = CURRENT_TEXT_BOX.body:sub(1,#CURRENT_TEXT_BOX.body-1)
+        end
+
+
+        -- Hotkeys shouldn't work if we have a text box selected, so we terminate early
+        return
+    end
+
     if currentFilm then
         currentFilm.idleTimer = 0
 
