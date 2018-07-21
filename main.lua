@@ -7,14 +7,12 @@ require('loadfile')
 require('input')
 local ctlStateEnum = require('controller_state')
 local Film = require('film')
-local Timeline = require('timeline')
 local Keyframe = require('keyframe')
 
 local LOVEdefaultFont = love.graphics:getFont()
 local BigFont = love.graphics.newFont(24)
 
 currentFilm = nil
-timeline = nil
 
 function updateWindowTitle()
     local title = APP_NAME .. ' by NotExplosive'
@@ -31,7 +29,6 @@ end
 function love.update(dt)
     if currentFilm then
         currentFilm:update(dt)
-        timeline:update(dt)
     end
     
     Keyframe.editMode = love.keyboard.isDown('lctrl') or love.keyboard.isDown('rctrl')
@@ -48,7 +45,6 @@ function love.draw()
             if love.keyboard.isDown(i) then
                 love.graphics.setColor(0.5,0.5,1)
                 currentFilm = Film.new(obj.path)
-                timeline = Timeline.new(currentFilm)
             end
             love.graphics.print(i .. ':\t'..obj.niceTitle .. '\t'..obj.fps..'\t'..'('..obj.filename..')',0,(i-1)*love.graphics.getFont():getHeight())
             love.graphics.setColor(1,1,1)
@@ -57,13 +53,10 @@ function love.draw()
 
     if currentFilm then
         currentFilm:draw()
-        love.graphics.print(currentFilm:status(),4,love.graphics.getHeight()-48,0)
-        timeline:draw()
-        
         Keyframe.drawUI(currentFilm)
 
-
         -- Keyframe timeline pane
+        love.graphics.print(currentFilm:status(),4,love.graphics.getHeight()-48,0)
         love.graphics.print('img:'..currentFilm.playhead,128,love.graphics.getHeight() - 128 - love.graphics.getFont():getHeight() - 2)
         love.graphics.setFont(BigFont)
         love.graphics.print(currentFilm:timeString(),10,love.graphics.getHeight() - 128 - love.graphics.getFont():getHeight())

@@ -4,6 +4,7 @@
 require('stringutil')
 local readFile = require('readfile')
 local Keyframe = require('keyframe')
+local Timeline = require('timeline')
 
 -- The binary most likely isn't at original framerate (30), so we scale up the "current frame" we're on
 local realFPS = 30
@@ -34,6 +35,7 @@ Film.new = function(dirPath)
     self.preloading = false
     self.playRealTime = false
     self.realTime = 0
+    self.timeline = Timeline.new(self)
 
     if self.title == nil or self.totalFrames == nil then
         printst('Data file at ' ..  dirPath .. ' is either corrupted or missing something')
@@ -99,6 +101,8 @@ Film.update = function(self,dt)
     if self.framesInMemory > 400 then
         self:h_clearData()
     end
+
+    self.timeline:update(dt)
 end
 
 Film.draw = function(self)
@@ -120,6 +124,8 @@ Film.draw = function(self)
         love.graphics.setColor(1,1,1)
         love.graphics.rectangle('line',0,0,love.graphics.getDimensions())
     end
+
+    self.timeline:draw()
 end
 
 Film.getFrameImage = function(self,index)
