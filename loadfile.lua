@@ -1,11 +1,3 @@
-function love.filedropped(file)
-    local name = file:getFilename()
-    local data = file:read()
-
-    print(name)
-end
-
-
 WorkingDirectoryBinaries = nil
 -- Loads all binaries in working directory
 -- Or loads the cached list if it exists
@@ -27,6 +19,10 @@ function loadWorkingDirectory()
                     obj = {}
                     obj.path = path
                     obj.filename = folderName
+                    local lines = love.filesystem.read(path .. '/' .. filename):split('\n')
+                    obj.niceTitle = lines[1]
+                    obj.totalFrames = tonumber(lines[2])
+                    obj.fps = tonumber(lines[3])
                     WorkingDirectoryBinaries[#WorkingDirectoryBinaries + 1] = obj
                 end
             end

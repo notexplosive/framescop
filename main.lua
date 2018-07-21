@@ -50,7 +50,7 @@ function love.draw()
                 currentFilm = Film.new(obj.path)
                 timeline = Timeline.new(currentFilm)
             end
-            love.graphics.print(i .. ':\t'..obj.filename,0,(i-1)*love.graphics.getFont():getHeight())
+            love.graphics.print(i .. ':\t'..obj.niceTitle .. '\t'..obj.fps..'\t'..'('..obj.filename..')',0,(i-1)*love.graphics.getFont():getHeight())
             love.graphics.setColor(1,1,1)
         end
     end

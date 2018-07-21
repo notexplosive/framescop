@@ -227,7 +227,6 @@ Keyframe.deserialize = function(film)
         for i=2,#lines do
             local line = lines[i]:split(',')
             local state = 1
-            print(unpack(line))
             for j=1,#columnNames do
                 columnName = columnNames[j]
                 if line[j] == 'true' then

@@ -1,5 +1,7 @@
 -- One-off function to read from a file.
 
+-- TODO: remove this, should be using love.filesystem.read instead of readFile
+
 function readFile(filename)
     local f = io.open(filename,'rb')
     if f then
