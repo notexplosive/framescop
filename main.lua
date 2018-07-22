@@ -46,7 +46,7 @@ function love.draw()
         if CURRENT_AUTHOR == '' then
             CURRENT_TEXT_BOX.on = true
             love.graphics.setFont(BigFont)
-            love.graphics.print("Type your reddit/discord handle so you can be credited.\nLeave blank for \'anonymous\'\n\nName: " .. CURRENT_TEXT_BOX.body .. TEXT_BOX_CURSOR)
+            love.graphics.print("Type your username so you can be credited.\nLeave blank for \'anonymous\'\n\nName: " .. CURRENT_TEXT_BOX.body .. TEXT_BOX_CURSOR)
 
             if CURRENT_TEXT_BOX.submitted then
                 CURRENT_AUTHOR = CURRENT_TEXT_BOX.clear()
@@ -79,10 +79,16 @@ function love.draw()
         Keyframe.drawUI(currentFilm)
 
         love.graphics.print(currentFilm:status(),4,love.graphics.getHeight()-48,0)
-        love.graphics.print('img:'..currentFilm.playhead,128,love.graphics.getHeight() - 128 - love.graphics.getFont():getHeight() - 2)
+
+        local rootx = love.graphics.getWidth() - 128 - 32
+        local y = love.graphics.getHeight() - 128 - 64 - 16
+        
+        love.graphics.print('img:'..currentFilm.playhead,rootx,y - love.graphics.getFont():getHeight() - 2)
+
         -- Keyframe timeline pane
         for i=-9,10 do
-            love.graphics.rectangle('line',10*i + 100,love.graphics.getHeight() - 128,10,10)
+            local x = rootx + 10*i
+            love.graphics.rectangle('line',x,y,10,10)
 
             -- default colors
             love.graphics.setColor(1,.25,0)
@@ -105,7 +111,7 @@ function love.draw()
                 love.graphics.setColor(0,0,0)
             end
 
-            love.graphics.rectangle('fill',10*i + 100,love.graphics.getHeight() - 128,10,10)
+            love.graphics.rectangle('fill',x,y,10,10)
             love.graphics.setColor(1,1,1)
         end
 

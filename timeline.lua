@@ -31,14 +31,25 @@ Timeline.draw = function(self)
     if self.isPressed then
         currentPlayheadPosition = love.mouse.getX()
     end
-
+    
     love.graphics.setFont(BigFont)
-    love.graphics.print(
-        self.film:timeString(currentPlayheadPosition/love.graphics.getWidth() * self.film.totalFrames),
-        10,
-        love.graphics.getHeight() - 128 - love.graphics.getFont():getHeight())
-    love.graphics.setFont(LOVEdefaultFont)
+    local text = self.film:timeString(currentPlayheadPosition/love.graphics.getWidth() * self.film.totalFrames)
+    local textx = love.graphics.getWidth() - 124 - 256 - 32
+    local texty = love.graphics.getHeight() - 32 - love.graphics.getFont():getHeight() - 16 - 4
 
+    love.graphics.setColor(0.25,0.25,0.25,0.5)
+    love.graphics.rectangle('fill',
+        textx-4,
+        texty-4,
+        love.graphics.getFont():getWidth(text)+8,
+        love.graphics.getFont():getHeight()+8)
+    love.graphics.setColor(1,1,1,1)
+    love.graphics.print(
+        text,
+        textx,
+        texty)
+    love.graphics.setFont(LOVEdefaultFont)
+    
     love.graphics.setColor(0, 1, 0, 0.4)
     love.graphics.rectangle('fill',0,love.graphics.getHeight()-32,love.graphics.getWidth()*self.film.playhead/self.film.totalFrames,32)
     if self:isFullHover() and not self:isHover() and not love.mouse.isDown(1) then
@@ -51,10 +62,9 @@ Timeline.draw = function(self)
         love.graphics.getHeight()-self.height,
         currentFrontierPosition,
         self.height)
-    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.setColor(0, 0, 0, 1)
     love.graphics.rectangle('line',0,love.graphics.getHeight()-32,love.graphics.getWidth(),32)
 
-    -- keyframes (WARNING: this might cause lag, getAll is a huge o(n) traversal)
     local keyframes = Keyframe.getAll(self.film)
     love.graphics.setColor(1,1,1,.25)
     for i,kf in ipairs(keyframes) do

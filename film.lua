@@ -184,7 +184,7 @@ Film.timeStringToFrames = function(self,timeString)
 end
 
 Film.getTrackPath = function(self)
-    return FILE_NAME .. '_input_track' .. '.csv'
+    return FILE_NAME .. '_input_track' .. '.tsv'
 end
 
 Film.getFullTrackPath = function(self)

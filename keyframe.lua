@@ -4,8 +4,6 @@ local Keyframe = {}
 Keyframe.__index = Keyframe
 
 Keyframe.list = KEYFRAME_LIST_GLOBAL
-Keyframe.x = 364
-Keyframe.y = love.graphics.getHeight() - 128 - 32
 Keyframe.editMode = false
 
 Keyframe.new = function(film,frameIndex,state,author)
@@ -48,6 +46,9 @@ Keyframe.new = function(film,frameIndex,state,author)
 end
 
 Keyframe.drawUI = function(film)
+    Keyframe.x = love.graphics.getWidth() - 256 - 4
+    Keyframe.y = love.graphics.getHeight() - 128 - 32
+
     local buttonRadius = 16
     local x = Keyframe.x+buttonRadius
     local y = Keyframe.y+buttonRadius
@@ -55,7 +56,10 @@ Keyframe.drawUI = function(film)
     local state = Keyframe.getStateAtTime(film.playhead)
 
     -- State's far right bit will be 1 if this is an actual keyframe and not just fetching most recent
+    love.graphics.setColor(0,0,0,0.25)
+    love.graphics.rectangle('fill',Keyframe.x-16,Keyframe.y-16,256,128)
     if state % 2 == 1 then
+        love.graphics.setColor(1,1,1,1)
         love.graphics.print('author: ' .. Keyframe.getCurrentKeyframe(film).author,Keyframe.x-16,Keyframe.y-32)
         love.graphics.rectangle('line',Keyframe.x-16,Keyframe.y-16,256,128)
     end
@@ -63,7 +67,7 @@ Keyframe.drawUI = function(film)
     local kf = Keyframe.getCurrentKeyframe(film)
 
     if Keyframe.editMode then
-        love.graphics.setColor(1,0.25,0.75)
+        love.graphics.setColor(1,1,0.75)
     end
 
     -- Up/Down/Left/Right are all just rotated V's. I'm lazy like that.
@@ -130,7 +134,7 @@ Keyframe.drawButton = function(text,x,y,r,a,state)
         end
 
         if text == 'x' then
-            love.graphics.setColor(0.5,0.5,1)
+            love.graphics.setColor(0.5,1,1)
             love.graphics.line(x-r/2,y-r/2,x+r/2,y+r/2)
             love.graphics.line(x-r/2,y+r/2,x+r/2,y-r/2)
         end
@@ -138,18 +142,27 @@ Keyframe.drawButton = function(text,x,y,r,a,state)
         text = ''
     end
 
-    local fill = 'line'
-    if state and state > 0 then
-        fill = 'fill'
-    end
     if a == nil then
         a = 0
     end
+
+    if state and state > 0 then
+        love.graphics.setColor(1,0.75,0.75,1)
+        love.graphics.circle('fill',x,y,r)
+    end
+
+    love.graphics.setColor(0.5,0.5,0.5)
+    if Keyframe.editMode then
+        love.graphics.setColor(1,0.5,0.5)
+    end
+
+    
+    love.graphics.circle('line',x,y,r)
+
     love.graphics.setColor(c)
-    love.graphics.circle(fill,x,y,r)
     local tx = x
     local ty = y
-    love.graphics.setColor(0.5,0.5,0.5)
+    love.graphics.setColor(1,1,1)
     love.graphics.print(text,tx,ty,a,1,1,4,8)
     love.graphics.setColor(c)
 end
