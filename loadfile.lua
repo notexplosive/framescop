@@ -19,10 +19,10 @@ function loadWorkingDirectory()
                     obj = {}
                     obj.path = path
                     obj.filename = folderName
+                    -- TODO: This gets repeated in film.lua, extract this out
                     local lines = love.filesystem.read(path .. '/' .. filename):split('\n')
                     obj.niceTitle = lines[1]
-                    obj.totalFrames = tonumber(lines[2])
-                    obj.fps = tonumber(lines[3])
+                    obj.fps = tonumber(lines[2])
                     WorkingDirectoryBinaries[#WorkingDirectoryBinaries + 1] = obj
                 end
             end

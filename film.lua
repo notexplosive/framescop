@@ -23,9 +23,12 @@ Film.new = function(dirPath)
     self.playhead = 1
 
     local lines = readFile(dirPath .. '/data.txt')
+    if not lines then
+        line = {'unknown',15}
+    end 
     self.title = lines[1]
-    self.totalFrames = tonumber(lines[2])
-    self.fps = tonumber(lines[3])
+    self.fps = tonumber(lines[2])
+    self.totalFrames = #love.filesystem.getDirectoryItems(dirPath)-1
     self.path = dirPath
     self.warning = false
     self.warningTimer = 0
@@ -55,18 +58,19 @@ Film.update = function(self,dt)
     self.idleTimer = self.idleTimer + dt
     self.preloading = false
 
-    local FPS = 15
+    
 
+    -- Handle realtime playback
     if self.playRealTime then
         self.idleTimer = 0
-        self.realTime = self.realTime + dt * FPS
+        self.realTime = self.realTime + dt * self.fps
         self.playhead = math.floor(self.realTime) + 1
     else
         self.realTime = self.playhead
     end
 
     if not self.data[self.playhead + 10] then
-        printst('Loading more frames...')
+        printst('Loading...')
         self.warning = true
         self.warningTimer = self.warningTimer + dt
 
@@ -83,7 +87,7 @@ Film.update = function(self,dt)
 
     if self.idleTimer > 1 then
         if self:h_loadAt(self:h_nextUnloadedFromPlayhead(),15) then
-            printst('Loading ahead...')
+            printst('Preloading...')
             self.preloading = true
         end
     end

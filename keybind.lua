@@ -36,7 +36,6 @@ Keybind.exec = function(key,mode)
         local action = Actions[name]
 
         if action then
-            print('ACT: ' .. name)
             action()
         end
     end
@@ -48,7 +47,6 @@ Keybind.new('p','toggleRealtimePlayback')
 Keybind.new('delete','deleteCurrentKeyframe')
 
 Keybind.new('^s','save')
-
 for i,dir in ipairs({'up','down','left','right'}) do
     Keybind.new('^'..dir, dir .. 'ToKeyframe')
 end
