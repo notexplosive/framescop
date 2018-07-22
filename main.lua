@@ -1,17 +1,18 @@
 require('global')
 require('input')
 
-iconData = love.image.newImageData("icon.png")
-love.window.setIcon( iconData )
-
 local ctlStateEnum = require('controller_state')
 local Film = require('film')
 local Keyframe = require('keyframe')
 
-love.window.updateMode(800,600,{resizable=true})
-updateWindowTitle()
+iconData = love.image.newImageData("icon.png")
+love.window.setIcon( iconData )
 
 function love.load(arg)
+    -- Setup window
+    love.window.updateMode(800,600,{resizable=true})
+    updateWindowTitle()
+
     -- Build working dir cache
     loadWorkingDirectory()
 

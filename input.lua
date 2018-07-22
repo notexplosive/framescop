@@ -68,7 +68,7 @@ function love.keypressed(key, scancode, isrepeat)
             -- Jump left
             if key == 'left' then
                 local frames = Keyframe.getAll(currentFilm)
-                for i=1,#frames do
+                for i=#frames,i,-1 do
                     if frames[i].time < currentFilm.playhead then
                         currentFilm:movePlayheadTo(frames[i].time)
                         break
