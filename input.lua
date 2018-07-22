@@ -1,5 +1,6 @@
 local ctlStateEnum = require('controller_state')
 local Keyframe = require('keyframe')
+local Keybind = require('keybind')
 
 --- KEYBOARD BEHAVIOR ---
 love.keyboard.setKeyRepeat(true)
@@ -54,58 +55,11 @@ function love.keypressed(key, scancode, isrepeat)
         end
 
         if love.keyboard.isDown('lshift') or love.keyboard.isDown('rshift') then
-            -- Jump right
-            if key == 'right' then
-                local frames = Keyframe.getAll(currentFilm)
-                for i=1,#frames do
-                    if frames[i].time > currentFilm.playhead then
-                        currentFilm:movePlayheadTo(frames[i].time)
-                        break
-                    end
-                end
-            end
-
-            -- Jump left
-            if key == 'left' then
-                local frames = Keyframe.getAll(currentFilm)
-                for i=#frames,i,-1 do
-                    if frames[i].time < currentFilm.playhead then
-                        currentFilm:movePlayheadTo(frames[i].time)
-                        break
-                    end
-                end
-            end
+            Keybind.exec('+'..key)
         elseif love.keyboard.isDown('lctrl') or love.keyboard.isDown('rctrl') then
-            if key == 's' then
-                FileMgr.save()
-            end
-
-            -- Toggle inputs on keyframe
-            if key == 'up' then
-                Keyframe.getCurrentKeyframe(currentFilm,true):flipState(ctlStateEnum.up)
-            end
-
-            if key == 'down' then
-                Keyframe.getCurrentKeyframe(currentFilm,true):flipState(ctlStateEnum.down)
-            end
-
-            if key == 'left' then
-                Keyframe.getCurrentKeyframe(currentFilm,true):flipState(ctlStateEnum.left)
-            end
-
-            if key == 'right' then
-                Keyframe.getCurrentKeyframe(currentFilm,true):flipState(ctlStateEnum.right)
-            end
+            Keybind.exec('^'..key)
         else -- Not pressing control
-            -- Step Right
-            if key == 'right' then
-                currentFilm:movePlayheadTo(currentFilm.playhead + 1)
-            end
-
-            -- Step Left
-            if key == 'left' then
-                currentFilm:movePlayheadTo(currentFilm.playhead - 1)
-            end
+            Keybind.exec(key)
         end
 
         local newState = Keyframe.getStateAtTime(currentFilm.playhead)
