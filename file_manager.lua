@@ -10,11 +10,11 @@ FileMgr.init = function(film)
 end
 
 FileMgr.save = function()
-    FileMgr.saveAs(Keyframe.list)
+    FileMgr.saveAs()
 end
 
-FileMgr.saveAs = function(keyframeList,filename)
-    FileMgr.serializeList(keyframeList,filename)
+FileMgr.saveAs = function(filename)
+    FileMgr.serializeList(filename)
 end
 
 FileMgr.load = function(film,filename)
@@ -22,7 +22,8 @@ FileMgr.load = function(film,filename)
     FileMgr.autosaveCount = 0
 end
 
-FileMgr.serializeList = function(list,filename)
+FileMgr.serializeList = function(filename)
+    local list = KEYFRAME_LIST_GLOBAL
     local buttonNames = ctlStateEnum.ALL_BUTTONS
     local text = 'time' .. DELIM
     for i=1,#buttonNames do
@@ -53,10 +54,11 @@ FileMgr.serializeList = function(list,filename)
 
     if filename == nil then
         filename = FileMgr.film:getTrackPath()
-        local file,err = love.filesystem.write(filename, text)
     end
 
-    printst(FileMgr.film:getFullTrackPath() .. ' saved.')
+    love.filesystem.write(filename, text)
+
+    printst(filename .. ' saved.')
     return text
 end
 
@@ -85,7 +87,6 @@ FileMgr.deserialize = function(filename)
                 end
             end
 
-            print('state:'..state)
             Keyframe.new(FileMgr.film,FileMgr.film:timeStringToFrames(line[1]),state,author)
         end
     end

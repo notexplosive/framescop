@@ -23,12 +23,11 @@ Keyframe.new = function(film,frameIndex,state,author)
     setmetatable(self, Keyframe)
 
     if FileMgr.autosaveCount ~= -1 then
-        print('inc')
         FileMgr.autosaveCount = FileMgr.autosaveCount + 1
         -- Every few created keyframes, save.
         if FileMgr.autosaveCount > 10 then
             FileMgr.autosaveCount = 0
-            FileMgr.save('autosave')
+            FileMgr.saveAs('autosave')
         end
     end
 

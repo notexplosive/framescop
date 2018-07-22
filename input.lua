@@ -53,11 +53,34 @@ function love.keypressed(key, scancode, isrepeat)
             end
         end
 
-        if love.keyboard.isDown('lctrl') or love.keyboard.isDown('rctrl') then
-            if key == 's' then
-                print(FileMgr.save(Keyframe.list))
+        if love.keyboard.isDown('lshift') or love.keyboard.isDown('rshift') then
+            -- Jump right
+            if key == 'right' then
+                local frames = Keyframe.getAll(currentFilm)
+                for i=1,#frames do
+                    if frames[i].time > currentFilm.playhead then
+                        currentFilm:movePlayheadTo(frames[i].time)
+                        break
+                    end
+                end
             end
 
+            -- Jump left
+            if key == 'left' then
+                local frames = Keyframe.getAll(currentFilm)
+                for i=1,#frames do
+                    if frames[i].time < currentFilm.playhead then
+                        currentFilm:movePlayheadTo(frames[i].time)
+                        break
+                    end
+                end
+            end
+        elseif love.keyboard.isDown('lctrl') or love.keyboard.isDown('rctrl') then
+            if key == 's' then
+                FileMgr.save()
+            end
+
+            -- Toggle inputs on keyframe
             if key == 'up' then
                 Keyframe.getCurrentKeyframe(currentFilm,true):flipState(ctlStateEnum.up)
             end
@@ -74,11 +97,12 @@ function love.keypressed(key, scancode, isrepeat)
                 Keyframe.getCurrentKeyframe(currentFilm,true):flipState(ctlStateEnum.right)
             end
         else -- Not pressing control
-
+            -- Step Right
             if key == 'right' then
                 currentFilm:movePlayheadTo(currentFilm.playhead + 1)
             end
 
+            -- Step Left
             if key == 'left' then
                 currentFilm:movePlayheadTo(currentFilm.playhead - 1)
             end
