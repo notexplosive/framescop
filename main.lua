@@ -76,7 +76,20 @@ function love.draw()
                 currentFilm = Film.new(obj.path)
             end
             love.graphics.setFont(BigFont)
-            love.graphics.print(i .. ':\t'..obj.niceTitle .. '\t'..obj.fps..'\t'..'('..obj.filename..')',0,(i-1)*love.graphics.getFont():getHeight())
+            local x = 200
+            local y = 20
+            local buttonText = obj.niceTitle .. '\t'..obj.fps..'\t'..'('..obj.filename..')'
+            love.graphics.rectangle('line',x,y+(i-1)*64,love.graphics.getFont():getWidth(buttonText) + 8,love.graphics.getFont():getHeight() + 8)
+            local mx,my = love.mouse.getPosition()
+            if mx > x and mx < x + love.graphics.getFont():getWidth(buttonText) and my > y+(i-1)*64 and my < y+(i-1)*64 + love.graphics.getFont():getHeight() then
+                love.graphics.setColor(0,0,1)
+                love.graphics.rectangle('fill',x,y+(i-1)*64,love.graphics.getFont():getWidth(buttonText) + 8,love.graphics.getFont():getHeight() + 8)
+                if love.mouse.isDown(1) then
+                    currentFilm = Film.new(obj.path)
+                end
+            end
+            love.graphics.setColor(1,1,1)
+            love.graphics.print(buttonText,x,y+(i-1)*64)
             love.graphics.setColor(1,1,1)
         end
     end
