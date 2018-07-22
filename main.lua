@@ -70,6 +70,7 @@ function love.draw()
             love.graphics.print('No data found. Framedata folder does not have any valid directories.')
         end
 
+        -- File select menu: I threw this together in 5 minutes.
         for i,obj in ipairs(binaries) do
             if love.keyboard.isDown(i) then
                 love.graphics.setColor(0.5,0.5,1)
@@ -78,7 +79,7 @@ function love.draw()
             love.graphics.setFont(BigFont)
             local x = 200
             local y = 20
-            local buttonText = obj.niceTitle .. '\t'..obj.fps..'\t'..'('..obj.filename..')'
+            local buttonText = obj.filename
             love.graphics.rectangle('line',x,y+(i-1)*64,love.graphics.getFont():getWidth(buttonText) + 8,love.graphics.getFont():getHeight() + 8)
             local mx,my = love.mouse.getPosition()
             if mx > x and mx < x + love.graphics.getFont():getWidth(buttonText) and my > y+(i-1)*64 and my < y+(i-1)*64 + love.graphics.getFont():getHeight() then

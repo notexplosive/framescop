@@ -3,7 +3,23 @@ local Keyframe = require('keyframe')
 
 FileMgr = {}
 
+FileMgr.trackPath = nil
 FileMgr.autosaveCount = -1
+
+function love.filedropped(file)
+    if currentFilm then
+        -- if we're on windows, split on '\', otherwise split on '/'
+        local splitName = file:getFilename():split('\\')
+        if #splitName == 0 then
+            splitName = file:getFilename():split('/')
+        end
+        local name = splitName[#splitName]
+        Keyframe.list = {}
+        FileMgr.deserializeList(file:read():split('\n'))
+        FileMgr.trackPath = name
+        printst('Opened ' .. name)
+    end
+end
 
 FileMgr.init = function(film)
     FileMgr.film = film
@@ -64,32 +80,40 @@ FileMgr.serializeList = function(filename)
 end
 
 FileMgr.deserialize = function(filename)
-    local info = love.filesystem.getInfo(FileMgr.film:getTrackPath())
+    if FileMgr.trackPath == nil then
+        FileMgr.trackPath = FILE_NAME .. '.tsv'
+    end
+
+    local info = love.filesystem.getInfo(FileMgr.trackPath)
     if info and info.size > 0 then
-        local data = love.filesystem.read(FileMgr.film:getTrackPath())
+        local data = love.filesystem.read(FileMgr.trackPath)
         local lines = data:split('\n')
-        local columnNames = lines[1]:split(DELIM)
-        local author = 'unknown'
+        FileMgr.deserializeList(lines)
+    end
+end
 
-        for i=2,#lines do
-            local line = lines[i]:split(DELIM)
-            local state = 1
-            for j=1,#columnNames do
-                columnName = columnNames[j]
-                if line[j] and line[j]:lower() == 'true' then
-                    state = bit.bor(state,ctlStateEnum[columnName])
-                end
+FileMgr.deserializeList = function(lines)
+    local columnNames = lines[1]:split(DELIM)
+    local author = 'unknown'
 
-                -- Author's column
-                if j == #columnNames then
-                    if line[j] then
-                        author = line[j]
-                    end
-                end
+    for i=2,#lines do
+        local line = lines[i]:split(DELIM)
+        local state = 1
+        for j=1,#columnNames do
+            columnName = columnNames[j]
+            if line[j] and line[j]:lower() == 'true' then
+                state = bit.bor(state,ctlStateEnum[columnName])
             end
 
-            Keyframe.new(FileMgr.film,FileMgr.film:timeStringToFrames(line[1]),state,author)
+            -- Author's column
+            if j == #columnNames then
+                if line[j] then
+                    author = line[j]
+                end
+            end
         end
+
+        Keyframe.new(FileMgr.film,FileMgr.film:timeStringToFrames(line[1]),state,author)
     end
 end
 

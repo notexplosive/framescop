@@ -18,6 +18,7 @@ Keybind.new = function(key,name,mode)
         mode = 'default'
     end
 
+    print(key,name)
     Keybind.table[mode][key] = self
 
     return self

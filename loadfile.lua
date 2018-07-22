@@ -15,7 +15,7 @@ function loadWorkingDirectory()
         if love.filesystem.getInfo(path).type == 'directory' then
             local files = love.filesystem.getDirectoryItems(path)
             for j,filename in ipairs(files) do
-                if filename == 'data.txt' then
+                if filename == '1.png' then
                     obj = {}
                     obj.path = path
                     obj.filename = folderName

@@ -18,6 +18,7 @@ Film.new = function(dirPath)
 
     local split = dirPath:split('/')
     FILE_NAME = split[#split]
+    FileMgr.trackPath = FILE_NAME .. '.tsv'
     updateWindowTitle()
 
     self.playhead = 1
@@ -26,8 +27,8 @@ Film.new = function(dirPath)
     if not lines then
         line = {'unknown',15}
     end 
-    self.title = lines[1]
-    self.fps = tonumber(lines[2])
+    self.title = dirPath
+    self.fps = 15
     self.totalFrames = #love.filesystem.getDirectoryItems(dirPath)-1
     self.path = dirPath
     self.warning = false
@@ -184,7 +185,7 @@ Film.timeStringToFrames = function(self,timeString)
 end
 
 Film.getTrackPath = function(self)
-    return FILE_NAME .. '_input_track' .. '.tsv'
+    return FileMgr.trackPath
 end
 
 Film.getFullTrackPath = function(self)
