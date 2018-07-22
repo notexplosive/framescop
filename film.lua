@@ -44,7 +44,8 @@ Film.new = function(dirPath)
     self.data = {}
     self:h_loadAt(1,60)
 
-    Keyframe.deserialize(self)
+    FileMgr.init(self)
+    FileMgr.load(self)
 
     return self
 end

@@ -1,26 +1,6 @@
 local ctlStateEnum = require('controller_state')
 local Keyframe = require('keyframe')
 
--- TODO: extract text box related code into its own file
--- This would include globals like cursorTimer and TEXT_BOX_CURSOR
-CURRENT_TEXT_BOX = {}
-TEXT_BOX_CURSOR = '|'
-
-CURRENT_TEXT_BOX.clear = function()
-    local ret = CURRENT_TEXT_BOX.body
-    CURRENT_TEXT_BOX.on = false
-    CURRENT_TEXT_BOX.body = ''
-    CURRENT_TEXT_BOX.submitted = false
-    return ret
-end
-
-CURRENT_TEXT_BOX.submit = function()
-    -- Flags itself as submitted, someone else needs to listen for this and clear
-    CURRENT_TEXT_BOX.submitted = true
-end
-
-CURRENT_TEXT_BOX.clear()
-
 --- KEYBOARD BEHAVIOR ---
 love.keyboard.setKeyRepeat(true)
 function love.textinput( text )
@@ -75,7 +55,7 @@ function love.keypressed(key, scancode, isrepeat)
 
         if love.keyboard.isDown('lctrl') or love.keyboard.isDown('rctrl') then
             if key == 's' then
-                print(Keyframe.serializeList(currentFilm))
+                print(FileMgr.save(Keyframe.list))
             end
 
             if key == 'up' then

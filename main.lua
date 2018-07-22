@@ -1,32 +1,15 @@
-FILE_NAME = 'empty'
-APP_NAME = 'Framescop V1.0'
-CURRENT_AUTHOR = ''
-LOVEdefaultFont = love.graphics:getFont()
-BigFont = love.graphics.newFont(24)
+require('global')
+require('input')
 
 icon = love.image.newImageData("icon.png")
 success = love.window.setIcon( icon )
 
-require('global')
-require('status')
-require('loadfile')
-require('input')
 local ctlStateEnum = require('controller_state')
 local Film = require('film')
 local Keyframe = require('keyframe')
 
--- todo: make this local, fix where that breaks.
-currentFilm = nil
-
--- Window setup
-function updateWindowTitle()
-    local title = APP_NAME .. ' by NotExplosive'
-    love.window.setTitle(title .. ' - ' .. FILE_NAME)
-end
-
-updateWindowTitle()
-
 love.window.updateMode(800,600,{resizable=true})
+updateWindowTitle()
 
 function love.load(arg)
     -- Build working dir cache

@@ -34,7 +34,7 @@ Timeline.draw = function(self)
 
     love.graphics.setFont(BigFont)
     love.graphics.print(
-        currentFilm:timeString(currentPlayheadPosition/love.graphics.getWidth() * self.film.totalFrames),
+        self.film:timeString(currentPlayheadPosition/love.graphics.getWidth() * self.film.totalFrames),
         10,
         love.graphics.getHeight() - 128 - love.graphics.getFont():getHeight())
     love.graphics.setFont(LOVEdefaultFont)

@@ -22,6 +22,16 @@ Keyframe.new = function(film,frameIndex,state,author)
     local self = {}
     setmetatable(self, Keyframe)
 
+    if FileMgr.autosaveCount ~= -1 then
+        print('inc')
+        FileMgr.autosaveCount = FileMgr.autosaveCount + 1
+        -- Every few created keyframes, save.
+        if FileMgr.autosaveCount > 10 then
+            FileMgr.autosaveCount = 0
+            FileMgr.save('autosave')
+        end
+    end
+
     self.film = film
 
     -- Far right bit is the isKeyFrame flag.
@@ -194,73 +204,6 @@ Keyframe.getStateAtTime = function(frameIndex)
     end
 
     return 0
-end
-
-Keyframe.serializeList = function(film)
-    local buttonNames = ctlStateEnum.ALL_BUTTONS
-    local text = 'time,'
-    for i=1,#buttonNames do
-        text = text .. buttonNames[i] .. ','
-    end
-    text = text .. 'author'
-    local keyframes = Keyframe.getAll(film)
-    for i=1,#keyframes do
-        local keyframe = keyframes[i]
-        -- note: time was an added field in getAll
-        local row = film:timeString(keyframe.time) .. ','
-        for i=1,#buttonNames do
-            local buttonName = buttonNames[i]
-            local b = keyframe:hasState(buttonName)
-            if b then
-                row = row .. 'true,'
-            else
-                row = row .. 'false,'
-            end
-
-            if i == #buttonNames then
-                row = row .. keyframe.author
-            end
-        end
-
-        text = text .. '\n' .. row
-    end
-
-    local filename = film:getTrackPath()
-    local file,err = love.filesystem.write(filename, text)
-
-    printst(film:getFullTrackPath() .. ' saved.')
-    return text
-end
-
-Keyframe.deserialize = function(film)
-    local info = love.filesystem.getInfo(film:getTrackPath())
-    if info and info.size > 0 then
-        local data = love.filesystem.read(film:getTrackPath())
-        local lines = data:split('\n')
-        local columnNames = lines[1]:split(',')
-        local author = 'unknown'
-
-        for i=2,#lines do
-            local line = lines[i]:split(',')
-            local state = 1
-            for j=1,#columnNames do
-                columnName = columnNames[j]
-                if line[j] and line[j]:lower() == 'true' then
-                    state = bit.bor(state,ctlStateEnum[columnName])
-                end
-
-                -- Author's column
-                if j == #columnNames then
-                    if line[j] then
-                        author = line[j]
-                    end
-                end
-            end
-
-            print(state)
-            Keyframe.new(film,film:timeStringToFrames(line[1]),state,author)
-        end
-    end
 end
 
 return Keyframe
