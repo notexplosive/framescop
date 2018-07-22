@@ -23,5 +23,5 @@ Future Versions:
 +Multivideo playback
 +Multiple input tracks at once (do we really want this? might make the UI too confusing)
 +Audio
-+Move keyframes after they've moved
++Move keyframes after they've been created (maybe? might make UI to complicated)
 +Better save UI so you can distinguish marvin/paul on the same video

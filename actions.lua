@@ -48,8 +48,7 @@ end
 
 Actions.jumpLeft = function()
     local frames = Keyframe.getAll(currentFilm)
-    for i=#frames,i,-1 do
-        print(frames[i].time)
+    for i=#frames,1,-1 do
         if frames[i].time < currentFilm.playhead then
             currentFilm:movePlayheadTo(frames[i].time)
             return
