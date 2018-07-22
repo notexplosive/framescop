@@ -9,16 +9,18 @@ Version 1.0
 +Realtime playback
 
 todo:
-Make all the binaries
-Add support for logging:
-	face buttons
-	triggers
-	confirm/deny
-autosave
-eliminate need for the datafile to know how many frames there are. we can just count
+shipBlocker: Make all the binaries
+shipBlocker: eliminate need for the datafile to know how many frames there are. we can just count
+refactor input: map inputs to actions
 
 Future Versions:
++Support face buttons
+	+We'll have to agree that x=CONFIRM and o=CANCEL, will graphicall reflect this
 +Support varied framerates
++Mouse support
+	+Scroll wheel to traverse frames
++Controller support?
+	+Might be more comfortable for some people? idk
 +Multivideo playback
 +Multiple input tracks at once (do we really want this? might make the UI too confusing)
 +Audio

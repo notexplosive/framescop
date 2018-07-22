@@ -1,8 +1,8 @@
 require('global')
 require('input')
 
-icon = love.image.newImageData("icon.png")
-success = love.window.setIcon( icon )
+iconData = love.image.newImageData("icon.png")
+love.window.setIcon( iconData )
 
 local ctlStateEnum = require('controller_state')
 local Film = require('film')
