@@ -34,31 +34,11 @@ function love.keypressed(key, scancode, isrepeat)
     if currentFilm then
         currentFilm.idleTimer = 0
 
-        if key == 'return' then
-            currentFilm.playRealTime = not currentFilm.playRealTime
-            if currentFilm.playRealTime then
-                printst('Play')
-            else
-                printst('Paused')
-            end
-        end
-
-        if key == 'space' then
-            Keyframe.new(currentFilm,currentFilm.playhead,0)
-        end
-
-        if key == 'delete' then
-            if Keyframe.list[currentFilm.playhead] then
-                printst('keyframe deleted')
-                Keyframe.list[currentFilm.playhead] = nil
-            end
-        end
-
         if love.keyboard.isDown('lshift') or love.keyboard.isDown('rshift') then
             Keybind.exec('+'..key)
         elseif love.keyboard.isDown('lctrl') or love.keyboard.isDown('rctrl') then
             Keybind.exec('^'..key)
-        else -- Not pressing control
+        else -- no modifier keys
             Keybind.exec(key)
         end
 
@@ -67,7 +47,7 @@ function love.keypressed(key, scancode, isrepeat)
         -- Checks for redundant keyframes
         if newState == oldState then
             Keyframe.list[currentFilm.playhead] = nil
-            printst('Deleted Keyframe')
+            printst('Redundant Keyframe.')
         end
     end
 end

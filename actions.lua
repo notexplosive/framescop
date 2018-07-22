@@ -1,6 +1,9 @@
+-- Actions that get assigned to keys in keybind.lua
 local ctlStateEnum = require('controller_state')
 local Keyframe = require('keyframe')
 Actions = {}
+
+Actions.save = FileMgr.save
 
 Actions.stepRight = function()
     currentFilm:movePlayheadTo(currentFilm.playhead + 1)
@@ -54,6 +57,22 @@ Actions.jumpLeft = function()
     end
 
     currentFilm:movePlayheadTo(1)
+end
+
+Actions.toggleRealtimePlayback = function()
+    currentFilm.playRealTime = not currentFilm.playRealTime
+    if currentFilm.playRealTime then
+        printst('Play')
+    else
+        printst('Paused')
+    end
+end
+
+Actions.deleteCurrentKeyframe = function()
+    if Keyframe.list[currentFilm.playhead] then
+        printst('Deleted keyframe')
+        Keyframe.list[currentFilm.playhead] = nil
+    end
 end
 
 return Actions

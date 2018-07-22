@@ -7,22 +7,17 @@ Keybind.table = {}
 Keybind.table.default = {}
 Keybind.table.fileSelect = {}
 
--- Overload option    (name,key,callback) mode = 'default'
-Keybind.new = function(name,key,mode,callback)
+Keybind.new = function(key,name,mode)
     self = {}
     setmetatable(self, Keybind)
 
     self.name = name
     self.key = key
 
-    -- Overload handling
-    if not self.callback then
-        callback = mode
+    if mode == nil then
         mode = 'default'
     end
-    self.callback = callback
 
-    print(mode,key,self.callback)
     Keybind.table[mode][key] = self
 
     return self
@@ -35,23 +30,30 @@ Keybind.exec = function(key,mode)
         mode = 'default'
     end
 
-    local action = Keybind.table[mode][key]
+    local entry = Keybind.table[mode][key]
+    if entry then
+        local name = entry.name
+        local action = Actions[name]
 
-    if action then
-        print('ACT: ' .. action.name)
-        action.callback()
+        if action then
+            print('ACT: ' .. name)
+            action()
+        end
     end
 end
 
-Keybind.new('stepRight','right',Actions.stepRight)
-Keybind.new('stepLeft','left',Actions.stepLeft)
-Keybind.new('save','^s',FileMgr.save)
+Keybind.new('right','stepRight')
+Keybind.new('left','stepLeft')
+Keybind.new('p','toggleRealtimePlayback')
+Keybind.new('delete','deleteCurrentKeyframe')
+
+Keybind.new('^s','save')
 
 for i,dir in ipairs({'up','down','left','right'}) do
-    Keybind.new(dir .. 'ToKeyframe','^'..dir,Actions[dir .. 'ToKeyframe'])
+    Keybind.new('^'..dir, dir .. 'ToKeyframe')
 end
 
-Keybind.new('jumpRight','+right',Actions.jumpRight)
-Keybind.new('jumpLeft','+left',Actions.jumpLeft)
+Keybind.new('+right','jumpRight')
+Keybind.new('+left','jumpLeft')
 
 return Keybind
