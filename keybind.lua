@@ -35,21 +35,34 @@ Keybind.exec = function(key,mode)
         local name = entry.name
         local action = Actions[name]
 
+        print(name)
+        print(action)
         if action then
+            print(name)
             action()
         end
     end
 end
 
+print('Keybinds: (+ shift) (@ alt) (^ ctrl)')
 Keybind.new('right','stepRight')
 Keybind.new('left','stepLeft')
 Keybind.new('p','toggleRealtimePlayback')
 Keybind.new('delete','deleteCurrentKeyframe')
 
 Keybind.new('^s','save')
+local faceButtons = {'tri','x','sqr','cir'}
 for i,dir in ipairs({'up','down','left','right'}) do
     Keybind.new('^'..dir, dir .. 'ToKeyframe')
+    Keybind.new('@'..dir, faceButtons[i] .. 'ToKeyframe')
 end
+
+for i,v in ipairs({'start','up','down','left','right','tri','x','sqr','cir','select'}) do
+    Keybind.new((i-1) .. '', v..'ToKeyframe')
+end
+
+Keybind.new('@'..'space','selectToKeyframe')
+Keybind.new('^'..'space','startToKeyframe')
 
 Keybind.new('+right','jumpRight')
 Keybind.new('+left','jumpLeft')

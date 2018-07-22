@@ -25,3 +25,4 @@ Future Versions:
 +Audio
 +Move keyframes after they've been created (maybe? might make UI to complicated)
 +Better save UI so you can distinguish marvin/paul on the same video
++Actually be a standalone executable and not a love2d frankenstein

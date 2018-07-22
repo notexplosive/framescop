@@ -34,7 +34,13 @@ function love.update(dt)
         currentFilm:update(dt)
     end
     
-    Keyframe.editMode = love.keyboard.isDown('lctrl') or love.keyboard.isDown('rctrl')
+    Keyframe.editMode = 0
+    if love.keyboard.isDown('lctrl') or love.keyboard.isDown('rctrl') then
+        Keyframe.editMode = 1
+    end
+    if love.keyboard.isDown('lalt') or love.keyboard.isDown('ralt') then
+        Keyframe.editMode = 2
+    end
 
     updateStatusText(dt)
 end
@@ -61,7 +67,7 @@ function love.draw()
 
         local binaries = loadWorkingDirectory()
         if #binaries == 0 then
-            love.graphics.print('no binaries found')
+            love.graphics.print('No data found. Framedata folder does not have any valid directories.')
         end
 
         for i,obj in ipairs(binaries) do
@@ -69,6 +75,7 @@ function love.draw()
                 love.graphics.setColor(0.5,0.5,1)
                 currentFilm = Film.new(obj.path)
             end
+            love.graphics.setFont(BigFont)
             love.graphics.print(i .. ':\t'..obj.niceTitle .. '\t'..obj.fps..'\t'..'('..obj.filename..')',0,(i-1)*love.graphics.getFont():getHeight())
             love.graphics.setColor(1,1,1)
         end

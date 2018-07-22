@@ -4,7 +4,7 @@ local Keyframe = {}
 Keyframe.__index = Keyframe
 
 Keyframe.list = KEYFRAME_LIST_GLOBAL
-Keyframe.editMode = false
+Keyframe.editMode = 0
 
 Keyframe.new = function(film,frameIndex,state,author)
     if author == nil then
@@ -66,10 +66,6 @@ Keyframe.drawUI = function(film)
 
     local kf = Keyframe.getCurrentKeyframe(film)
 
-    if Keyframe.editMode then
-        love.graphics.setColor(1,1,0.75)
-    end
-
     -- Up/Down/Left/Right are all just rotated V's. I'm lazy like that.
     -- TODO: maybe make these images of a PS1 controller? Could be cute.
     Keyframe.drawButton('V',x+32,y+64,buttonRadius,0,bit.band(state,ctlStateEnum.down))
@@ -82,6 +78,9 @@ Keyframe.drawUI = function(film)
     Keyframe.drawButton('triangle',x+128+32,y,buttonRadius,0,bit.band(state,ctlStateEnum.triangle))
     Keyframe.drawButton('square',x+128,y+32,buttonRadius,0,bit.band(state,ctlStateEnum.square))
     Keyframe.drawButton('circle',x+128+64,y+32,buttonRadius,0,bit.band(state,ctlStateEnum.circle))
+
+    Keyframe.drawButton('start',x+128-64+16,y,buttonRadius,0,bit.band(state,ctlStateEnum.start))
+    Keyframe.drawButton('select',x+128-16,y,buttonRadius,0,bit.band(state,ctlStateEnum.select))
     love.graphics.setColor(1,1,1)
 end
 
@@ -114,7 +113,11 @@ end
 
 Keyframe.drawButton = function(text,x,y,r,a,state)
     local c = {love.graphics.getColor()}
-    if text ~= 'V' then
+    if a == nil then
+        a = 0
+    end
+
+    if text ~= 'V' and text ~= 'start' and text ~= 'select' then
         if text == 'triangle' then
             love.graphics.setColor(0.5,1,0.5)
             love.graphics.polygon('line',
@@ -142,28 +145,36 @@ Keyframe.drawButton = function(text,x,y,r,a,state)
         text = ''
     end
 
-    if a == nil then
-        a = 0
-    end
-
-    if state and state > 0 then
-        love.graphics.setColor(1,0.75,0.75,1)
-        love.graphics.circle('fill',x,y,r)
-    end
-
     love.graphics.setColor(0.5,0.5,0.5)
-    if Keyframe.editMode then
+
+    if Keyframe.editMode == 1 and (text == 'V' or text == 'start') then
         love.graphics.setColor(1,0.5,0.5)
     end
 
-    
-    love.graphics.circle('line',x,y,r)
+    if Keyframe.editMode == 2 and text ~= 'V' and text ~= 'start' then
+        love.graphics.setColor(1,0.5,1)
+    end
 
-    love.graphics.setColor(c)
-    local tx = x
-    local ty = y
-    love.graphics.setColor(1,1,1)
-    love.graphics.print(text,tx,ty,a,1,1,4,8)
+    
+    -- Draw button border and background
+    if text == 'start' or text == 'select' then
+        if state and state > 0 then
+            love.graphics.setColor(1,1,1)
+            if Keyframe.editMode > 0 then
+                love.graphics.circle('line',x,y,r)
+            end
+        end
+        love.graphics.print(text,x-love.graphics.getFont():getWidth(text)/2,y,a,1,1,4,8)
+    else
+        if state and state > 0 then
+            love.graphics.setColor(1,0.75,0.75,1)
+            love.graphics.circle('fill',x,y,r)
+        end
+        love.graphics.circle('line',x,y,r)
+        love.graphics.setColor(1,1,1)
+        love.graphics.print(text,x,y,a,1,1,4,8)
+    end
+
     love.graphics.setColor(c)
 end
 

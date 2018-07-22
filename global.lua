@@ -37,6 +37,7 @@ BigFont = love.graphics.newFont(24)
 
 -- Window setup
 function updateWindowTitle()
-    local title = APP_NAME .. ' by NotExplosive'
+    local easterEgg = {"Framescop kid very smart","Remember being framescop?","That's a dead framescop","Some things, you just can't framescop","Pristmatic Tool"}
+    local title = easterEgg[love.math.random(1,#easterEgg)]
     love.window.setTitle(title .. ' - ' .. FILE_NAME)
 end

@@ -8,10 +8,10 @@ function loadWorkingDirectory()
         WorkingDirectoryBinaries = {}
     end
 
-    local binaries = love.filesystem.getDirectoryItems('binaries')
+    local binaries = love.filesystem.getDirectoryItems('framedata')
 
     for i,folderName in ipairs(binaries) do
-        local path = 'binaries/'..folderName
+        local path = 'framedata/'..folderName
         if love.filesystem.getInfo(path).type == 'directory' then
             local files = love.filesystem.getDirectoryItems(path)
             for j,filename in ipairs(files) do

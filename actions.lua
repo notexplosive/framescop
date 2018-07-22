@@ -34,6 +34,30 @@ Actions.rightToKeyframe = function()
     appendToKeyframe('right')
 end
 
+Actions.triToKeyframe = function()
+    appendToKeyframe('triangle')
+end
+
+Actions.xToKeyframe = function()
+    appendToKeyframe('x')
+end
+
+Actions.sqrToKeyframe = function()
+    appendToKeyframe('square')
+end
+
+Actions.cirToKeyframe = function()
+    appendToKeyframe('circle')
+end
+
+Actions.startToKeyframe = function()
+    appendToKeyframe('start')
+end
+
+Actions.selectToKeyframe = function()
+    appendToKeyframe('select')
+end
+
 Actions.jumpRight = function()
     local frames = Keyframe.getAll(currentFilm)
     for i=1,#frames do

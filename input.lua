@@ -1,6 +1,7 @@
 local ctlStateEnum = require('controller_state')
 local Keyframe = require('keyframe')
 local Keybind = require('keybind')
+local Actions = require('actions')
 
 --- KEYBOARD BEHAVIOR ---
 love.keyboard.setKeyRepeat(true)
@@ -38,6 +39,8 @@ function love.keypressed(key, scancode, isrepeat)
             Keybind.exec('+'..key)
         elseif love.keyboard.isDown('lctrl') or love.keyboard.isDown('rctrl') then
             Keybind.exec('^'..key)
+        elseif love.keyboard.isDown('lalt') or love.keyboard.isDown('ralt') then
+            Keybind.exec('@'..key)
         else -- no modifier keys
             Keybind.exec(key)
         end
@@ -64,7 +67,7 @@ end
 
 function love.mousemoved(x,y,dx,dy,isTouch)
     if currentFilm then
-        currentFilm.idleTimer = 0
+        
     end
 end
 
@@ -80,3 +83,16 @@ function love.mousepressed(x,y,button,isTouch)
         end
     end
 end
+
+
+--[[ If we did a mouse-only mode, it would look something like this:1234567890
+function love.wheelmoved(x,y)
+    if y > 0 then
+        Actions.stepLeft()
+    end
+
+    if y < 0 then
+        Actions.stepRight()
+    end
+end
+]]

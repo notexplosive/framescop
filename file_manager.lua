@@ -59,6 +59,7 @@ FileMgr.serializeList = function(filename)
     love.filesystem.write(filename, text)
 
     printst(filename .. ' saved.')
+    print(FileMgr.film:getFullTrackPath())
     return text
 end
 

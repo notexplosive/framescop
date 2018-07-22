@@ -1,6 +1,7 @@
 local ctlStateEnum = {}
 -- This is used for serialization, these are the columns of the csv file
-ctlStateEnum.ALL_BUTTONS = {'up','down','left','right','x','circle','triangle','square'}
+-- TODO: use this concept to create a table of "columns" of which this is a subset of. This way we can add more columns to the schema without breaking old tracks
+ctlStateEnum.ALL_BUTTONS = {'up','down','left','right','x','circle','triangle','square','start','select'}
 
 ctlStateEnum.isKeyFrame = 1
 ctlStateEnum.up = 2

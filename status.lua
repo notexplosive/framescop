@@ -17,4 +17,4 @@ function updateStatusText(dt)
     end
 end
 
-printst('App loaded')
+printst("Framescop by NotExplosive")
