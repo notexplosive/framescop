@@ -60,6 +60,10 @@ function love.draw()
         end
 
         local binaries = loadWorkingDirectory()
+        if #binaries == 0 then
+            love.graphics.print('no binaries found')
+        end
+
         for i,obj in ipairs(binaries) do
             if love.keyboard.isDown(i) then
                 love.graphics.setColor(0.5,0.5,1)

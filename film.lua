@@ -58,8 +58,6 @@ Film.update = function(self,dt)
     self.idleTimer = self.idleTimer + dt
     self.preloading = false
 
-    
-
     -- Handle realtime playback
     if self.playRealTime then
         self.idleTimer = 0
@@ -111,7 +109,11 @@ Film.update = function(self,dt)
 end
 
 Film.draw = function(self)
-    love.graphics.draw(self:getFrameImage(self.playhead))
+    local frame = self:getFrameImage(self.playhead)
+    local scalex = love.graphics.getWidth() / frame:getWidth()
+    local scaley = love.graphics.getHeight() / frame:getHeight()
+    love.graphics.draw(frame,0,0,0,scalex,scaley)
+
     if self.warning then
         self.playRealTime = false
         love.graphics.setColor(1,0,0)
