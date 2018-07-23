@@ -14,7 +14,8 @@ function love.filedropped(file)
             splitName = file:getFilename():split('/')
         end
         local name = splitName[#splitName]
-        Keyframe.list = {}
+        KEYFRAME_LIST_GLOBAL = {}
+        Keyframe.list = KEYFRAME_LIST_GLOBAL
         FileMgr.deserializeList(file:read():split('\n'))
         FileMgr.trackPath = name
         printst('Opened ' .. name)
