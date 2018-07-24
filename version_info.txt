@@ -8,13 +8,10 @@ Version 1.0
 +Can save keyframe data to a CSV for later comparison and visualization
 +Realtime playback
 
-todo:
-shipBlocker: Make all the binaries
-shipBlocker: eliminate need for the datafile to know how many frames there are. we can just count
+Requested Features on my radar:
++Maintain aspect ratio
 
 Future Versions:
-+Support face buttons
-	+We'll have to agree that x=CONFIRM and o=CANCEL, will graphicall reflect this
 +Support varied framerates
 +Mouse support
 	+Scroll wheel to traverse frames

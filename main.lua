@@ -67,6 +67,7 @@ function love.draw()
 
         local binaries = loadWorkingDirectory()
         if #binaries == 0 then
+            love.filesystem.createDirectory('framedata')
             love.graphics.print('No data found. Framedata folder does not have any valid directories.')
         end
 
@@ -138,5 +139,15 @@ function love.draw()
 
         love.graphics.setFont(BigFont)
         love.graphics.print(StatusText)
+
+        if FileMgr.trackPath then
+            local textWidth = love.graphics.getFont():getWidth(FileMgr.trackPath)
+            local textHeight = love.graphics.getFont():getHeight()
+            local textX = love.graphics.getWidth()-textWidth
+            love.graphics.setColor(0,0,0,0.5)
+            love.graphics.rectangle('fill',textX,0,textWidth,textHeight)
+            love.graphics.setColor(1,1,1)
+            love.graphics.print(FileMgr.trackPath,textX,0)
+        end
     end
 end

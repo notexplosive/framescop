@@ -11,9 +11,7 @@ Keyframe.new = function(film,frameIndex,state,author)
         author = CURRENT_AUTHOR
     end
 
-    if state == 0 then
-        printst('Empty keyframe created')
-    else
+    if state ~= 0 then
         printst('Keyframe created')
     end
 
