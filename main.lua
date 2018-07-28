@@ -6,11 +6,11 @@ local Film = require('film')
 local Keyframe = require('keyframe')
 
 iconData = love.image.newImageData("icon.png")
-love.window.setIcon( iconData )
+love.window.setIcon(iconData)
 
 function love.load(arg)
     -- Setup window
-    love.window.updateMode(800,600,{resizable=true})
+    love.window.updateMode(800, 600, {resizable=true})
     updateWindowTitle()
 
     -- Build working dir cache
@@ -22,14 +22,9 @@ function love.load(arg)
     end
 end
 
-cursorTimer = 0
 function love.update(dt)
-    cursorTimer = cursorTimer + dt
-    if math.sin(cursorTimer * math.pi*2) > 0 then
-        TEXT_BOX_CURSOR = '|'
-    else
-        TEXT_BOX_CURSOR = ''
-    end
+    CURRENT_TEXT_BOX:update(dt)
+
     if currentFilm then
         currentFilm:update(dt)
     end
@@ -37,10 +32,9 @@ function love.update(dt)
     Keyframe.editMode = 0
     if love.keyboard.isDown('lctrl') or love.keyboard.isDown('rctrl') then
         Keyframe.editMode = 1
-    end
-    if love.keyboard.isDown('lalt') or love.keyboard.isDown('ralt') then
+    elseif love.keyboard.isDown('lalt') or love.keyboard.isDown('ralt') then
         Keyframe.editMode = 2
-    end
+    end -- This way if you're pressing both ctrl & alt you don't get unexpected behaviour
 
     updateStatusText(dt)
 end
@@ -52,7 +46,7 @@ function love.draw()
         if CURRENT_AUTHOR == '' then
             CURRENT_TEXT_BOX.on = true
             love.graphics.setFont(BigFont)
-            love.graphics.print("Type your username so you can be credited.\nLeave blank for \'anonymous\'\n\nName: " .. CURRENT_TEXT_BOX.body .. TEXT_BOX_CURSOR)
+            love.graphics.print("Type your username so you can be credited.\nLeave blank for \'anonymous\'\n\nName: " .. CURRENT_TEXT_BOX.body .. CURRENT_TEXT_BOX.cursor)
 
             if CURRENT_TEXT_BOX.submitted then
                 CURRENT_AUTHOR = CURRENT_TEXT_BOX.clear()
