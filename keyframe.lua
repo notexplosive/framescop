@@ -38,8 +38,6 @@ Keyframe.new = function(film,frameIndex,state,data)
         print('warning: overwriting frame at ' .. frameIndex)
     end
 
-    print(unpack(self))
-
     Keyframe.list[frameIndex] = self
 
     return self

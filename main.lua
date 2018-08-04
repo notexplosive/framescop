@@ -5,6 +5,8 @@ local ctlStateEnum = require('controller_state')
 local Film = require('film')
 local Keyframe = require('keyframe')
 
+require('tests.test_all')
+
 iconData = love.image.newImageData("icon.png")
 love.window.setIcon(iconData)
 

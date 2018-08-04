@@ -102,7 +102,10 @@ FileMgr.deserialize = function(filename)
         local data = love.filesystem.read(FileMgr.trackPath)
         local lines = data:split('\n')
         FileMgr.deserializeList(lines)
+        return true
     end
+
+    return false
 end
 
 FileMgr.deserializeList = function(lines)
@@ -117,7 +120,6 @@ FileMgr.deserializeList = function(lines)
             if line[j] and line[j]:lower() == 'true' and isButton(columnName) then
                 state = bit.bor(state,ctlStateEnum[columnName])
             else
-                print(columnName,line[j])
                 data[columnName] = line[j]
             end
         end

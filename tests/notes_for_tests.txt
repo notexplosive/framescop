@@ -1,0 +1,5 @@
+I haven't written any proper tests yet because I didn't really write this code
+to be particularly well testable.
+
+However there is a lot I would like to make testable, particularly FileManager
+serialize and deserialize I would like to create regression tests for.
