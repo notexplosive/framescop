@@ -65,7 +65,7 @@ Keyframe.drawUI = function(film)
     love.graphics.setColor(1,1,1)
 
     -- Up/Down/Left/Right are all just rotated V's. I'm lazy like that.
-    local dis = 32
+    local dis = 24
     Keyframe.drawButton('up',x+dis,y)
     Keyframe.drawButton('down',x+dis,y+dis*2)
     Keyframe.drawButton('left',x,y+dis)
@@ -85,7 +85,12 @@ end
 function Keyframe.drawButton(buttonName,x,y)
     local r = 16
 
+    -- helpful for debugging!
+    -- love.graphics.rectangle('line',x-r,y-r,r*2,r*2)
+
     if Keyframe.isButtonCurrentlySet(buttonName) then
+        love.graphics.setColor(1,1,1,.5)
+        love.graphics.circle('fill',x,y,r)
         love.graphics.setColor(.5,.5,.5)
         love.graphics.circle('line',x,y,r)
     end
@@ -104,7 +109,6 @@ function Keyframe.drawButton(buttonName,x,y)
         end
 
         drawButtonGraphic('direction',x,y,angle)
-        --love.graphics.print('V',x,y,angle,1,1,4,8)
     end
 
     -- detect hovers
@@ -114,8 +118,12 @@ function Keyframe.drawButton(buttonName,x,y)
             if not Keyframe.isButtonCurrentlySet(buttonName) then
                 love.graphics.setColor(.25,.25,.25)
             end
-            love.graphics.circle('line',x,y,r)
-            CURRENT_MOUSEOVER_TARGET = buttonName
+            
+            -- This 'if' ensures nothing else is being hovered over
+            if CURRENT_MOUSEOVER_TARGET == '' then
+                love.graphics.circle('line',x,y,r)
+                CURRENT_MOUSEOVER_TARGET = buttonName
+            end
         end
     end
 
