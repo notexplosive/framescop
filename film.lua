@@ -2,7 +2,6 @@
 -- to make it look like it's a contiguous video.
 
 require('stringutil')
-local readFile = require('readfile')
 local Keyframe = require('keyframe')
 local Timeline = require('timeline')
 
@@ -22,11 +21,7 @@ Film.new = function(dirPath)
     updateWindowTitle()
 
     self.playhead = 1
-
-    local lines = readFile(dirPath .. '/data.txt')
-    if not lines then
-        line = {'unknown',15}
-    end 
+ 
     self.title = dirPath
     self.fps = 15
     self.totalFrames = #love.filesystem.getDirectoryItems(dirPath)-1
@@ -40,10 +35,6 @@ Film.new = function(dirPath)
     self.playRealTime = false
     self.realTime = 0
     self.timeline = Timeline.new(self)
-
-    if self.title == nil or self.totalFrames == nil then
-        printst('Data file at ' ..  dirPath .. ' is either corrupted or missing something')
-    end
 
     self.data = {}
     self:h_loadAt(1,60)

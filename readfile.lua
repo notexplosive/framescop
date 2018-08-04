@@ -1,6 +1,5 @@
 -- One-off function to read from a file.
-
--- TODO: remove this, should be using love.filesystem.read instead of readFile
+-- NOTE: this file is not used, will delete in a future commit once we're certain
 
 function readFile(filename)
     local f = io.open(filename,'rb')
@@ -12,7 +11,6 @@ function readFile(filename)
         return lines
     end
     
-    print("ERROR: no file: " .. filename)
     return nil
 end
 
