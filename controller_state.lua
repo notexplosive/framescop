@@ -19,4 +19,14 @@ ctlStateEnum.l2 = 16384
 ctlStateEnum.r1 = 32768
 ctlStateEnum.r2 = 65536
 
+function isButton(str)
+    for i,buttonName in ipairs(ctlStateEnum.ALL_BUTTONS) do
+        if buttonName == str then
+            return true
+        end
+    end
+    return false
+end
+
+
 return ctlStateEnum

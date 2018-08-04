@@ -6,6 +6,14 @@ FileMgr = {}
 FileMgr.trackPath = nil
 FileMgr.autosaveCount = -1
 
+-- TSV FILE TOP ROW LOOKS LIKE THE FOLLOWING
+-- time, notes, up, down, left, {..all other buttons..}, author
+FileMgr.schema = {'time','notes'}
+for i=1,#ctlStateEnum.ALL_BUTTONS do
+    FileMgr.schema[#FileMgr.schema+1] = ctlStateEnum.ALL_BUTTONS[i]
+end
+FileMgr.schema[#FileMgr.schema+1] = 'author'
+
 function love.filedropped(file)
     if currentFilm then
         -- if we're on windows, split on '\', otherwise split on '/'
@@ -41,28 +49,29 @@ end
 
 FileMgr.serializeList = function(filename)
     local list = KEYFRAME_LIST_GLOBAL
-    local buttonNames = ctlStateEnum.ALL_BUTTONS
-    local text = 'time' .. DELIM
-    for i=1,#buttonNames do
-        text = text .. buttonNames[i] .. DELIM
+    local schema = FileMgr.schema
+    local text = ''
+    for i=1,#schema do
+        text = text .. schema[i] .. DELIM
     end
-    text = text .. 'author'
-    local keyframes = Keyframe.getAll(FileMgr.film)
+
+    local keyframes = Keyframe.getAll(FileMgr.film,true)
     for i=1,#keyframes do
         local keyframe = keyframes[i]
-        -- note: time was an added field in getAll
-        local row = FileMgr.film:timeString(keyframe.time) .. DELIM
-        for i=1,#buttonNames do
-            local buttonName = buttonNames[i]
-            local b = keyframe:hasState(buttonName)
-            if b then
-                row = row .. 'true' .. DELIM
-            else
-                row = row .. 'false' .. DELIM
-            end
+        -- note: time was an added field in Keyframe.getAll, it wasn't there before
+        local row = '' --to delete: FileMgr.film:timeString(keyframe.time) .. DELIM
+        for i=1,#schema do
+            local colName = schema[i]
+            if isButton(colName) then
+                local buttonPressed = keyframe:hasState(colName)
 
-            if i == #buttonNames then
-                row = row .. keyframe.author
+                if buttonPressed == true then
+                    row = row .. 'true' .. DELIM
+                else
+                    row = row .. 'false' .. DELIM
+                end
+            else
+                row = row .. keyframe[schema[i]] .. DELIM
             end
         end
 

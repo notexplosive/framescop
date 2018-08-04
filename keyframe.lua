@@ -32,6 +32,7 @@ Keyframe.new = function(film,frameIndex,state,author)
     -- Far right bit is the isKeyFrame flag.
     self.state = bit.bor(state,1)
     self.author = author
+    self.notes = ''
 
     -- Merge with that keyframe
     if Keyframe.list[frameIndex] then
@@ -198,12 +199,15 @@ end
 -- Returns a sorted array of all keyframes
 -- Traverses through the entire timeline to get it.
 -- O(n) sort for medium-large n, thoughts?
-Keyframe.getAll = function(film)
+Keyframe.getAll = function(film,realtime)
     list = {}
     for i=1,film.totalFrames do
         if Keyframe.list[i] ~= nil then
             list[#list+1] = Keyframe.list[i]
             Keyframe.list[i].time = i
+            if realtime then
+                Keyframe.list[i].time = currentFilm:timeString(i)
+            end
         end
     end
     return list
