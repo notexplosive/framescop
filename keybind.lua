@@ -5,6 +5,7 @@ Keybind.__index = Keybind
 
 Keybind.table = {}
 Keybind.table.default = {}
+-- is this even used?
 Keybind.table.fileSelect = {}
 
 Keybind.new = function(key,name,mode)
@@ -18,7 +19,6 @@ Keybind.new = function(key,name,mode)
         mode = 'default'
     end
 
-    print(key,name)
     Keybind.table[mode][key] = self
 
     return self
@@ -45,7 +45,6 @@ Keybind.exec = function(key,mode)
     end
 end
 
-print('Keybinds: (+ shift) (@ alt) (^ ctrl)')
 Keybind.new('right','stepRight')
 Keybind.new('left','stepLeft')
 Keybind.new('p','toggleRealtimePlayback')
@@ -60,10 +59,12 @@ end
 
 for i,v in ipairs({'start','up','down','left','right','tri','x','sqr','cir','select'}) do
     Keybind.new((i-1) .. '', v..'ToKeyframe')
+    Keybind.new('mouseClick'..v, v..'ToKeyframe')
 end
 
-Keybind.new('@'..'space','selectToKeyframe')
-Keybind.new('^'..'space','startToKeyframe')
+
+Keybind.new('^'..'space','selectToKeyframe')
+Keybind.new('@'..'space','startToKeyframe')
 
 Keybind.new('+right','jumpRight')
 Keybind.new('+left','jumpLeft')

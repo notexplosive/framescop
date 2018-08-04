@@ -25,6 +25,7 @@ function love.load(arg)
 end
 
 function love.update(dt)
+    CURRENT_MOUSEOVER_TARGET = ''
     CURRENT_TEXT_BOX:update(dt)
 
     if currentFilm then

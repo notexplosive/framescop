@@ -4,6 +4,14 @@ local Keybind = require('keybind')
 local Actions = require('actions')
 
 --- KEYBOARD BEHAVIOR ---
+function altDown()
+    return love.keyboard.isDown('lalt') or love.keyboard.isDown('ralt')
+end
+
+function ctrlDown()
+    return love.keyboard.isDown('lctrl') or love.keyboard.isDown('rctrl')
+end
+
 love.keyboard.setKeyRepeat(true)
 function love.textinput( text )
     -- omit newline
@@ -72,7 +80,13 @@ function love.mousemoved(x,y,dx,dy,isTouch)
 end
 
 function love.mousepressed(x,y,button,isTouch)
+    if button == 1 and CURRENT_MOUSEOVER_TARGET ~= '' then
+        print(CURRENT_MOUSEOVER_TARGET)
+        Keybind.exec('mouseClick'..CURRENT_MOUSEOVER_TARGET)
+    end
+
     -- Playhead capture
+    -- this should be replaced with the new mouse input framework
     if button == 1 and currentFilm then
         if currentFilm.timeline:isHover() then
             currentFilm.timeline.isPressed = true

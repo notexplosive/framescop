@@ -53,33 +53,96 @@ Keyframe.drawUI = function(film)
 
     local state = Keyframe.getStateAtTime(film.playhead)
 
-    -- State's far right bit will be 1 if this is an actual keyframe and not just fetching most recent
     love.graphics.setColor(0,0,0,0.25)
     love.graphics.rectangle('fill',Keyframe.x-16,Keyframe.y-16,256,128)
+    -- State's far right bit will be 1 if this is an actual keyframe and not just fetching most recent
     if state % 2 == 1 then
         love.graphics.setColor(1,1,1,1)
         love.graphics.print('author: ' .. Keyframe.getCurrentKeyframe(film).author,Keyframe.x-16,Keyframe.y-32)
         love.graphics.rectangle('line',Keyframe.x-16,Keyframe.y-16,256,128)
     end
 
-    local kf = Keyframe.getCurrentKeyframe(film)
+    love.graphics.setColor(1,1,1)
 
     -- Up/Down/Left/Right are all just rotated V's. I'm lazy like that.
-    -- TODO: maybe make these images of a PS1 controller? Could be cute.
-    Keyframe.drawButton('V',x+32,y+64,buttonRadius,0,bit.band(state,ctlStateEnum.down))
-    Keyframe.drawButton('V',x+32,y,buttonRadius,math.pi,bit.band(state,ctlStateEnum.up))
-    Keyframe.drawButton('V',x,y+32,buttonRadius,math.pi/2,bit.band(state,ctlStateEnum.left))
-    Keyframe.drawButton('V',x+64,y+32,buttonRadius,-math.pi/2,bit.band(state,ctlStateEnum.right))
-
+    local dis = 32
+    Keyframe.drawButton('up',x+dis,y)
+    Keyframe.drawButton('down',x+dis,y+dis*2)
+    Keyframe.drawButton('left',x,y+dis)
+    Keyframe.drawButton('right',x+dis*2,y+dis)
     
-    Keyframe.drawButton('x',x+128+32,y+64,buttonRadius,0,bit.band(state,ctlStateEnum.x))
-    Keyframe.drawButton('triangle',x+128+32,y,buttonRadius,0,bit.band(state,ctlStateEnum.triangle))
-    Keyframe.drawButton('square',x+128,y+32,buttonRadius,0,bit.band(state,ctlStateEnum.square))
-    Keyframe.drawButton('circle',x+128+64,y+32,buttonRadius,0,bit.band(state,ctlStateEnum.circle))
+    dis = 32
+    Keyframe.drawButton('x',x+128+dis,y+dis*2)
+    Keyframe.drawButton('triangle',x+128+dis,y)
+    Keyframe.drawButton('square',x+128,y+dis)
+    Keyframe.drawButton('circle',x+128+dis*2,y+dis)
 
-    Keyframe.drawButton('start',x+128-64+16,y,buttonRadius,0,bit.band(state,ctlStateEnum.start))
-    Keyframe.drawButton('select',x+128-16,y,buttonRadius,0,bit.band(state,ctlStateEnum.select))
+    Keyframe.drawButton('select',x+128-64+16,y)
+    Keyframe.drawButton('start',x+128-16,y)
     love.graphics.setColor(1,1,1)
+end
+
+function Keyframe.drawButton(buttonName,x,y)
+    local r = 16
+
+    if Keyframe.isButtonCurrentlySet(buttonName) then
+        love.graphics.setColor(.5,.5,.5)
+        love.graphics.circle('line',x,y,r)
+    end
+    
+    love.graphics.setColor(1,1,1)
+    if isDirection(buttonName) then
+        local angles = {}
+        angles['up'] = math.pi
+        angles['down'] = 0
+        angles['left'] = math.pi/2
+        angles['right'] = 0-math.pi/2
+    
+        local angle = 0
+        if angles[buttonName] then
+            angle = angles[buttonName]
+        end
+
+        drawButtonGraphic('direction',x,y,angle)
+        --love.graphics.print('V',x,y,angle,1,1,4,8)
+    end
+
+    -- detect hovers
+    local mx,my = love.mouse.getPosition()
+    if mx > x - r and my > y - r then
+        if mx < x + r and my < y + r then
+            if not Keyframe.isButtonCurrentlySet(buttonName) then
+                love.graphics.setColor(.25,.25,.25)
+            end
+            love.graphics.circle('line',x,y,r)
+            CURRENT_MOUSEOVER_TARGET = buttonName
+        end
+    end
+
+    love.graphics.setColor(1,1,1)
+
+    if isFaceButton(buttonName) then
+        drawButtonGraphic(buttonName,x,y)
+    end
+
+    if isStartSelect(buttonName) then
+        love.graphics.print(buttonName,x,y,0,1,1,16,8)
+    end
+
+    love.graphics.setColor(1,1,1)
+
+    -- Might want to move this input code somewhere else, I don't like 
+    -- random keybinds in the middle of my draw calls.
+    if altDown() and (isFaceButton(buttonName) or buttonName == 'start') then
+        love.graphics.setColor(1,0,0)
+   end
+
+    if ctrlDown() and (isDirection(buttonName) or buttonName == 'select') then
+        love.graphics.setColor(1,0,0)
+    end
+
+    -- draw outline
+    -- love.graphics.circle('line',x,y,r)
 end
 
 -- flip one bit at on state enum
@@ -103,77 +166,15 @@ Keyframe.hasState = function(self,stateName)
     return bit.band(ctlStateEnum[stateName],self.state) > 0
 end
 
+function Keyframe.isButtonCurrentlySet(buttonName)
+    state = Keyframe.getStateAtTime(currentFilm.playhead)
+    return bit.band(ctlStateEnum[buttonName],state) > 0
+end
+
 Keyframe.addState = function(self,stateName)
     if ctlStateEnum[stateName] then
         self.state = bit.bor(ctlStateEnum[stateName],self.state)
     end
-end
-
-Keyframe.drawButton = function(text,x,y,r,a,state)
-    local c = {love.graphics.getColor()}
-    if a == nil then
-        a = 0
-    end
-
-    if text ~= 'V' and text ~= 'start' and text ~= 'select' then
-        if text == 'triangle' then
-            love.graphics.setColor(0.5,1,0.5)
-            love.graphics.polygon('line',
-                x-r*2/3,    y+r*2/6,
-                x,          y-r*2/3,
-                x+r*2/3,    y+r*2/6    )
-        end
-
-        if text == 'square' then
-            love.graphics.setColor(1,0.7,0.7)
-            love.graphics.rectangle('line',x-r/2,y-r/2,r,r)
-        end
-
-        if text == 'circle' then
-            love.graphics.setColor(1,0.5,0.5)
-            love.graphics.circle('line',x,y,r*2/3)
-        end
-
-        if text == 'x' then
-            love.graphics.setColor(0.5,1,1)
-            love.graphics.line(x-r/2,y-r/2,x+r/2,y+r/2)
-            love.graphics.line(x-r/2,y+r/2,x+r/2,y-r/2)
-        end
-
-        text = ''
-    end
-
-    love.graphics.setColor(0.5,0.5,0.5)
-
-    if Keyframe.editMode == 1 and (text == 'V' or text == 'start') then
-        love.graphics.setColor(1,0.5,0.5)
-    end
-
-    if Keyframe.editMode == 2 and text ~= 'V' and text ~= 'start' then
-        love.graphics.setColor(1,0.5,1)
-    end
-
-    
-    -- Draw button border and background
-    if text == 'start' or text == 'select' then
-        if state and state > 0 then
-            love.graphics.setColor(1,1,1)
-            if Keyframe.editMode > 0 then
-                love.graphics.circle('line',x,y,r)
-            end
-        end
-        love.graphics.print(text,x-love.graphics.getFont():getWidth(text)/2,y,a,1,1,4,8)
-    else
-        if state and state > 0 then
-            love.graphics.setColor(1,0.75,0.75,1)
-            love.graphics.circle('fill',x,y,r)
-        end
-        love.graphics.circle('line',x,y,r)
-        love.graphics.setColor(1,1,1)
-        love.graphics.print(text,x,y,a,1,1,4,8)
-    end
-
-    love.graphics.setColor(c)
 end
 
 Keyframe.getCurrentKeyframe = function(film,forceCreate)
