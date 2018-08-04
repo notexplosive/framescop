@@ -71,6 +71,9 @@ FileMgr.serializeList = function(filename)
                     row = row .. 'false' .. DELIM
                 end
             else
+                if keyframe[schema[i]] == nil then
+                    keyframe[schema[i]] = '-'
+                end
                 row = row .. keyframe[schema[i]] .. DELIM
             end
         end

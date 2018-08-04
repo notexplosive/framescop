@@ -32,7 +32,6 @@ Keyframe.new = function(film,frameIndex,state,data)
     -- Far right bit is the isKeyFrame flag.
     self.state = bit.bor(state,1)
     self.author = data.author
-    self.notes = '-'
 
     -- Merge with that keyframe
     if Keyframe.list[frameIndex] then
