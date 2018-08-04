@@ -1,5 +1,4 @@
 require('tests.framework')
-require('tests.test_filemgr')
 
 -- Unit test the test functions, who watches the watchmen?
 local fakeObject = {
