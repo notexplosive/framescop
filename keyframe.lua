@@ -6,9 +6,9 @@ Keyframe.__index = Keyframe
 Keyframe.list = KEYFRAME_LIST_GLOBAL
 Keyframe.editMode = 0
 
-Keyframe.new = function(film,frameIndex,state,author)
-    if author == nil then
-        author = CURRENT_AUTHOR
+Keyframe.new = function(film,frameIndex,state,data)
+    if data.author == nil then
+        data.author = CURRENT_AUTHOR
     end
 
     if state ~= 0 then
@@ -31,13 +31,15 @@ Keyframe.new = function(film,frameIndex,state,author)
 
     -- Far right bit is the isKeyFrame flag.
     self.state = bit.bor(state,1)
-    self.author = author
-    self.notes = ''
+    self.author = data.author
+    self.notes = '-'
 
     -- Merge with that keyframe
     if Keyframe.list[frameIndex] then
         print('warning: overwriting frame at ' .. frameIndex)
     end
+
+    print(unpack(self))
 
     Keyframe.list[frameIndex] = self
 
@@ -181,7 +183,7 @@ Keyframe.getCurrentKeyframe = function(film,forceCreate)
     local kf = Keyframe.list[film.playhead]
     if kf == nil then
         if forceCreate then
-            return Keyframe.new(film,film.playhead,Keyframe.getStateAtTime(film.playhead),CURRENT_AUTHOR)
+            return Keyframe.new(film,film.playhead,Keyframe.getStateAtTime(film.playhead),{data=CURRENT_AUTHOR,notes=''})
         end
         local i = film.playhead
         while i > 0 do

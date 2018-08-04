@@ -77,7 +77,6 @@ Film.update = function(self,dt)
 
     if self.idleTimer > 1 then
         if self:h_loadAt(self:h_nextUnloadedFromPlayhead(),15) then
-            printst('Preloading...')
             self.preloading = true
         end
     end

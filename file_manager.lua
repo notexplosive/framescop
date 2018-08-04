@@ -104,26 +104,22 @@ end
 
 FileMgr.deserializeList = function(lines)
     local columnNames = lines[1]:split(DELIM)
-    local author = 'unknown'
 
     for i=2,#lines do
         local line = lines[i]:split(DELIM)
         local state = 1
+        local data = {}
         for j=1,#columnNames do
             columnName = columnNames[j]
-            if line[j] and line[j]:lower() == 'true' then
+            if line[j] and line[j]:lower() == 'true' and isButton(columnName) then
                 state = bit.bor(state,ctlStateEnum[columnName])
-            end
-
-            -- Author's column
-            if j == #columnNames then
-                if line[j] then
-                    author = line[j]
-                end
+            else
+                print(columnName,line[j])
+                data[columnName] = line[j]
             end
         end
 
-        Keyframe.new(FileMgr.film,FileMgr.film:timeStringToFrames(line[1]),state,author)
+        Keyframe.new(FileMgr.film,FileMgr.film:timeStringToFrames(line[1]),state,data)
     end
 end
 
