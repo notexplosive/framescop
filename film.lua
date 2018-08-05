@@ -104,25 +104,7 @@ Film.draw = function(self)
     local scalex = love.graphics.getWidth() / frame:getWidth()
     local scaley = love.graphics.getHeight() / frame:getHeight()
     love.graphics.draw(frame,0,0,0,scalex,scaley)
-
-    if self.warning then
-        self.playRealTime = false
-        love.graphics.setColor(1,0,0)
-        love.graphics.rectangle('line',0,0,love.graphics.getDimensions())
-        love.graphics.setColor(1,1,1)
-    end
-
-    if self.preloading then
-        love.graphics.setColor(0,1,0)
-        love.graphics.rectangle('line',0,0,love.graphics.getDimensions())
-        love.graphics.setColor(1,1,1)
-    end
-
-    if self.playRealTime then
-        love.graphics.setColor(1,1,1)
-        love.graphics.rectangle('line',0,0,love.graphics.getDimensions())
-    end
-
+    
     self.timeline:draw()
 end
 

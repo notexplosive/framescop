@@ -1,5 +1,6 @@
 require('global')
 require('input')
+require('colors')
 
 local Button = require('button')
 local ctlStateEnum = require('controller_state')
@@ -70,6 +71,7 @@ function love.draw()
         end
 
         -- File select menu: I threw this together in 5 minutes.
+        -- TODO: make this use the new button.normal() function
         for i,obj in ipairs(binaries) do
             if love.keyboard.isDown(i) then
                 love.graphics.setColor(0.5,0.5,1)
@@ -88,9 +90,9 @@ function love.draw()
                     currentFilm = Film.new(obj.path)
                 end
             end
-            love.graphics.setColor(1,1,1)
+            love.graphics.setColor(white())
             love.graphics.print(buttonText,x,y+(i-1)*64)
-            love.graphics.setColor(1,1,1)
+            love.graphics.setColor(white())
         end
     end
 
@@ -100,46 +102,45 @@ function love.draw()
 
         love.graphics.print(currentFilm:status(),4,love.graphics.getHeight()-48,0)
 
-        local rootx = love.graphics.getWidth() - 128 - 32
-        local y = love.graphics.getHeight() - 128 - 64 - 16
-        
-        love.graphics.print('img:'..currentFilm.playhead,rootx,y - love.graphics.getFont():getHeight() - 2)
+        local rootx = 128 + 32 + 8 + 2
 
-        -- Keyframe timeline pane
-        for i=-9,10 do
-            local x = rootx + 10*i
-            love.graphics.rectangle('line',x,y,10,10)
+        -- Keyframe timeline ticker pane
+        local sizeOfBuffer = 15
+        for i=-sizeOfBuffer,sizeOfBuffer do
+            local width = 8
+            local height = 16
+            local x = rootx + width*i
+            local y = love.graphics.getHeight() - 64 - 32 - 6
 
-            -- default colors
-            love.graphics.setColor(1,.25,0)
-            if (currentFilm.playhead + i) % 4 == 0 then
-                love.graphics.setColor(.6,.2,0)
+            if i == 0 then
+                y = y - 3
+                height = height + 5
+            end
+
+            love.graphics.setColor(keyframeTickerBGColor())
+            if (currentFilm.playhead + i) % width == 0 then
+                love.graphics.setColor(keyframeTickerBGSecondaryColor())
             end
 
             if Keyframe.list[currentFilm.playhead+i] then
-                love.graphics.setColor(0,1,0)
-            end
-
-            if i == 0 then
-                love.graphics.setColor(1,1,1)
-                if Keyframe.list[currentFilm.playhead+i] then
-                    love.graphics.setColor(0,0,1)
-                end
+                love.graphics.setColor(keyframeTickerCurrentFrameColor())
             end
 
             if currentFilm.playhead + i < 1 then
-                love.graphics.setColor(0,0,0)
+                love.graphics.setColor(darkgray())
             end
 
-            love.graphics.rectangle('fill',x,y,10,10)
-            love.graphics.setColor(1,1,1)
+            love.graphics.rectangle('fill',x,y,width,height)
+            love.graphics.setColor(black())
+            love.graphics.rectangle('line',x,y,width,height)
+            love.graphics.setColor(white())
         end
 
         
         love.graphics.setFont(BigFont)
-        love.graphics.setColor(0,0,0,0.5)
+        love.graphics.setColor(uiBackgroundColor())
         love.graphics.rectangle('fill',0,0,love.graphics.getWidth(),32)
-        love.graphics.setColor(1,1,1)
+        love.graphics.setColor(white())
         love.graphics.print(StatusText)
 
         if FileMgr.trackPath then
@@ -150,9 +151,9 @@ function love.draw()
         end
 
         if CURRENT_MODE == 'notes' then
-            love.graphics.setColor(.25,.25,.5,.5)
+            love.graphics.setColor(notesBackgroundColor())
             love.graphics.rectangle('fill',0,0,love.graphics.getDimensions())
-            love.graphics.setColor(1,1,1)
+            love.graphics.setColor(white())
             printst('') -- clear the print status header
             love.graphics.print('Notes at '..currentFilm:timeString()..':\n'..CURRENT_TEXT_BOX.body .. CURRENT_TEXT_BOX.cursor)
         end

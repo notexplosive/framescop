@@ -37,36 +37,33 @@ Timeline.draw = function(self)
     local textx = love.graphics.getWidth() - 124 - 256 - 32
     local texty = love.graphics.getHeight() - 32 - love.graphics.getFont():getHeight() - 16 - 4
 
-    love.graphics.setColor(0.25,0.25,0.25,0.5)
+    love.graphics.setColor(uiBackgroundColor())
     love.graphics.rectangle('fill',
         textx-4,
         texty-4,
         love.graphics.getFont():getWidth(text)+8,
         love.graphics.getFont():getHeight()+8)
-    love.graphics.setColor(1,1,1,1)
+    love.graphics.setColor(white())
     love.graphics.print(
         text,
         textx,
         texty)
     love.graphics.setFont(LOVEdefaultFont)
     
-    love.graphics.setColor(0, 1, 0, 0.4)
+    
+    love.graphics.setColor(timelineColor())
     love.graphics.rectangle('fill',0,love.graphics.getHeight()-32,love.graphics.getWidth()*self.film.playhead/self.film.totalFrames,32)
-    if self:isFullHover() and not self:isHover() and not love.mouse.isDown(1) then
-        love.graphics.setColor(0, 0, 1, .5)
-        love.graphics.rectangle('fill',0,love.graphics.getHeight()-32,love.graphics.getWidth(),32)
-    end
-    love.graphics.setColor(0, 1, 1, 0.1)
+    love.graphics.setColor(timelineLoadedBufferColor())
     love.graphics.rectangle('fill',
         currentViewedFramePostion,
         love.graphics.getHeight()-self.height,
         currentFrontierPosition,
         self.height)
-    love.graphics.setColor(0, 0, 0, 1)
+    love.graphics.setColor(black())
     love.graphics.rectangle('line',0,love.graphics.getHeight()-32,love.graphics.getWidth(),32)
 
     local keyframes = Keyframe.getAll(self.film)
-    love.graphics.setColor(1,1,1,.25)
+    love.graphics.setColor(timelineKeyframeMarkColor())
     for i,kf in ipairs(keyframes) do
         local x = kf.time/self.film.totalFrames * love.graphics.getWidth()
         local y1 = love.graphics.getHeight()-32
@@ -76,24 +73,19 @@ Timeline.draw = function(self)
 
     -- playhead
     local playheadWidth = self.width
-    if self:isHover() then
-        love.graphics.setColor(0,1,0)
-    else
-        love.graphics.setColor(1,1,1)
-    end
-
+    love.graphics.setColor(white())
     love.graphics.rectangle('fill',
         currentPlayheadPosition-playheadWidth/2,
         love.graphics.getHeight()-self.height,
         playheadWidth,
         self.height)
-    love.graphics.setColor(0,0,0)
+    love.graphics.setColor(black())
     love.graphics.rectangle('line',
         currentPlayheadPosition-playheadWidth/2,
         love.graphics.getHeight()-self.height,
         playheadWidth,
         self.height)
-    love.graphics.setColor(1,1,1)
+    love.graphics.setColor(white())
 end
 
 -- Is hovering over playhead?

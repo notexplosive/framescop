@@ -54,16 +54,16 @@ Keyframe.drawUI = function(film)
 
     local state = Keyframe.getStateAtTime(film.playhead)
 
-    love.graphics.setColor(0,0,0,0.25)
+    love.graphics.setColor(uiBackgroundColor())
     love.graphics.rectangle('fill',Keyframe.x-16,Keyframe.y-16,256,128)
     -- State's far right bit will be 1 if this is an actual keyframe and not just fetching most recent
     if state % 2 == 1 then
-        love.graphics.setColor(1,1,1,1)
+        love.graphics.setColor(white())
         love.graphics.print('author: ' .. Keyframe.getCurrentKeyframe(film).author,Keyframe.x-16,Keyframe.y-32)
         love.graphics.rectangle('line',Keyframe.x-16,Keyframe.y-16,256,128)
     end
 
-    love.graphics.setColor(1,1,1)
+    love.graphics.setColor(white())
 
     -- Up/Down/Left/Right are all just rotated V's. I'm lazy like that.
     local dis = 24
@@ -80,14 +80,14 @@ Keyframe.drawUI = function(film)
 
     Keyframe.drawButton('select',x+128-64+16,y)
     Keyframe.drawButton('start',x+128-16,y)
-    love.graphics.setColor(1,1,1)
+    love.graphics.setColor(white())
 
     -- display notes
     if Keyframe.getCurrentKeyframe(currentFilm) and Keyframe.getCurrentKeyframe(currentFilm).notes ~= '-' then
         local notes = Keyframe.getCurrentKeyframe(currentFilm).notes
-        love.graphics.setColor(0,0,0,0.5)
+        love.graphics.setColor(uiBackgroundColor())
         love.graphics.rectangle('fill',16,Keyframe.y-16,500,love.graphics.getFont():getHeight()*5)
-        love.graphics.setColor(1,1,1)
+        love.graphics.setColor(white())
         love.graphics.print(notes,24,Keyframe.y-12)
     end
 end
@@ -99,13 +99,13 @@ function Keyframe.drawButton(buttonName,x,y)
     -- love.graphics.rectangle('line',x-r,y-r,r*2,r*2)
 
     if Keyframe.isButtonCurrentlySet(buttonName) then
-        love.graphics.setColor(1,1,1,.5)
+        love.graphics.setColor(toggledButtonHighlightColor())
         love.graphics.circle('fill',x,y,r)
-        love.graphics.setColor(.5,.5,.5)
+        love.graphics.setColor(gray())
         love.graphics.circle('line',x,y,r)
     end
     
-    love.graphics.setColor(1,1,1)
+    love.graphics.setColor(white())
     if isDirection(buttonName) then
         local angles = {}
         angles['up'] = math.pi
@@ -126,7 +126,7 @@ function Keyframe.drawButton(buttonName,x,y)
     if mx > x - r and my > y - r then
         if mx < x + r and my < y + r then
             if not Keyframe.isButtonCurrentlySet(buttonName) then
-                love.graphics.setColor(.25,.25,.25)
+                love.graphics.setColor(lightgray())
             end
             
             -- This 'if' ensures nothing else is being hovered over
@@ -137,7 +137,7 @@ function Keyframe.drawButton(buttonName,x,y)
         end
     end
 
-    love.graphics.setColor(1,1,1)
+    love.graphics.setColor(white())
 
     if isFaceButton(buttonName) then
         drawButtonGraphic(buttonName,x,y)
@@ -155,16 +155,18 @@ function Keyframe.drawButton(buttonName,x,y)
         love.graphics.print(label,x,y,0,1,1,love.graphics.getFont():getWidth(label)/2,8)
     end
 
-    love.graphics.setColor(1,1,1)
+    love.graphics.setColor(white())
 
     -- Might want to move this input code somewhere else, I don't like 
     -- random keybinds in the middle of my draw calls.
     if altDown() and (isFaceButton(buttonName) or buttonName == 'start') then
-        love.graphics.setColor(1,0,0)
+        love.graphics.setColor(toggledButtonHighlightColor())
+        love.graphics.circle('line',x,y,r)
    end
 
     if ctrlDown() and (isDirection(buttonName) or buttonName == 'select') then
-        love.graphics.setColor(1,0,0)
+        love.graphics.setColor(toggledButtonHighlightColor())
+        love.graphics.circle('line',x,y,r)
     end
 
     -- draw outline
