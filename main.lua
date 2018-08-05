@@ -1,6 +1,7 @@
 require('global')
 require('input')
 
+local Button = require('button')
 local ctlStateEnum = require('controller_state')
 local Film = require('film')
 local Keyframe = require('keyframe')
@@ -154,6 +155,20 @@ function love.draw()
             love.graphics.setColor(1,1,1)
             printst('') -- clear the print status header
             love.graphics.print('Notes at '..currentFilm:timeString()..':\n'..CURRENT_TEXT_BOX.body .. CURRENT_TEXT_BOX.cursor)
+        end
+
+        if CURRENT_MODE == 'default' then
+            local playPause = 'Play'
+            if currentFilm.playRealTime then
+                playPause = 'Pause'
+            end
+            local buttonx = 16
+            local buttony = love.graphics.getHeight() - 80
+            Button.normal('>',buttonx+192,buttony,64,32,'stepRight')
+            Button.normal('<',buttonx+64,buttony,64,32,'stepLeft')
+            Button.normal(playPause,buttonx+128,buttony,64,32,'toggleRealtimePlayback')
+            Button.normal('>>',buttonx+256,buttony,64,32,'jumpRight')
+            Button.normal('<<',buttonx,buttony,64,32,'jumpLeft')
         end
     end
 end

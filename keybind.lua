@@ -26,6 +26,11 @@ Keybind.new = function(key,name,mode)
 end
 
 Keybind.exec = function(key)
+    -- Hey, you found it! Check this shit out.
+    if key:match('mouseClickButton_') then
+        local command = key:gsub('mouseClickButton_','')
+        Actions[command]()
+    end
     local entry = Keybind.table[CURRENT_MODE][key]
     if entry then
         local name = entry.name

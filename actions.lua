@@ -67,7 +67,7 @@ end
 function Actions.openNotes()
     CURRENT_TEXT_BOX.on = true
     local kf = Keyframe.getCurrentKeyframe(currentFilm,false)
-    if kf then
+    if kf and kf.notes ~= '-' then
         CURRENT_TEXT_BOX.body = kf.notes
     end
     CURRENT_MODE = 'notes'

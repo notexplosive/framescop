@@ -78,6 +78,7 @@ end
 
 function love.mousepressed(x,y,button,isTouch)
     if currentFilm and button == 1 and CURRENT_MOUSEOVER_TARGET ~= '' then
+        print(CURRENT_MOUSEOVER_TARGET)
         Keybind.exec('mouseClick'..CURRENT_MOUSEOVER_TARGET)
         Keyframe.clearRedundant()
     end
@@ -100,11 +101,13 @@ function love.mousepressed(x,y,button,isTouch)
 end
 
 function love.wheelmoved(x,y)
-    if y > 0 then
-        Actions.stepLeft()
-    end
+    if currentFilm then
+        if y > 0 then
+            Actions.stepLeft()
+        end
 
-    if y < 0 then
-        Actions.stepRight()
+        if y < 0 then
+            Actions.stepRight()
+        end
     end
 end

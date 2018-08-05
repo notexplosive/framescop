@@ -82,12 +82,13 @@ Keyframe.drawUI = function(film)
     Keyframe.drawButton('start',x+128-16,y)
     love.graphics.setColor(1,1,1)
 
+    -- display notes
     if Keyframe.getCurrentKeyframe(currentFilm) and Keyframe.getCurrentKeyframe(currentFilm).notes ~= '-' then
         local notes = Keyframe.getCurrentKeyframe(currentFilm).notes
         love.graphics.setColor(0,0,0,0.5)
-        love.graphics.rectangle('fill',16,Keyframe.y,500,love.graphics.getFont():getHeight()*5)
+        love.graphics.rectangle('fill',16,Keyframe.y-16,500,love.graphics.getFont():getHeight()*5)
         love.graphics.setColor(1,1,1)
-        love.graphics.print(notes,24,Keyframe.y+4)
+        love.graphics.print(notes,24,Keyframe.y-12)
     end
 end
 
