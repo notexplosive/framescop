@@ -82,6 +82,10 @@ function love.mousepressed(x,y,button,isTouch)
         Keyframe.clearRedundant()
     end
 
+    if currentFilm and button == 3 then
+        Keybind.exec('middleClick')
+    end
+
     -- Playhead capture
     -- this should be replaced with the new mouse input framework
     if button == 1 and currentFilm then
@@ -95,8 +99,6 @@ function love.mousepressed(x,y,button,isTouch)
     end
 end
 
-
---[[ If we did a mouse-only mode, it would look something like this:1234567890
 function love.wheelmoved(x,y)
     if y > 0 then
         Actions.stepLeft()
@@ -106,4 +108,3 @@ function love.wheelmoved(x,y)
         Actions.stepRight()
     end
 end
-]]

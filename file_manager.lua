@@ -102,10 +102,7 @@ FileMgr.deserialize = function(filename)
         local data = love.filesystem.read(FileMgr.trackPath)
         local lines = data:split('\n')
         FileMgr.deserializeList(lines)
-        return true
     end
-
-    return false
 end
 
 FileMgr.deserializeList = function(lines)
@@ -124,7 +121,8 @@ FileMgr.deserializeList = function(lines)
             end
         end
 
-        Keyframe.new(FileMgr.film,FileMgr.film:timeStringToFrames(line[1]),state,data)
+        local kf = Keyframe.new(FileMgr.film,FileMgr.film:timeStringToFrames(line[1]),state,data)
+        kf.notes = data.notes
     end
 end
 

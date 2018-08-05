@@ -66,13 +66,20 @@ end
 
 function Actions.openNotes()
     CURRENT_TEXT_BOX.on = true
+    local kf = Keyframe.getCurrentKeyframe(currentFilm,false)
+    if kf then
+        CURRENT_TEXT_BOX.body = kf.notes
+    end
     CURRENT_MODE = 'notes'
 end
 
 function Actions.closeNotes()
     CURRENT_TEXT_BOX.submit()
     local notes = CURRENT_TEXT_BOX.clear()
-    print(notes)
+    if notes == '' then
+        notes = '-'
+    end
+    Keyframe.getCurrentKeyframe(currentFilm,true).notes = notes
     CURRENT_MODE = 'default'
 end
 

@@ -67,4 +67,6 @@ Keybind.new('@'..'space','togglestart')
 Keybind.new('+right','jumpRight')
 Keybind.new('+left','jumpLeft')
 
+Keybind.new('middleClick','toggleRealtimePlayback')
+
 return Keybind

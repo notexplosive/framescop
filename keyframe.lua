@@ -32,6 +32,7 @@ Keyframe.new = function(film,frameIndex,state,data)
     -- Far right bit is the isKeyFrame flag.
     self.state = bit.bor(state,1)
     self.author = data.author
+    self.notes = '-'
 
     -- Merge with that keyframe
     if Keyframe.list[frameIndex] then
@@ -80,6 +81,14 @@ Keyframe.drawUI = function(film)
     Keyframe.drawButton('select',x+128-64+16,y)
     Keyframe.drawButton('start',x+128-16,y)
     love.graphics.setColor(1,1,1)
+
+    if Keyframe.getCurrentKeyframe(currentFilm) and Keyframe.getCurrentKeyframe(currentFilm).notes ~= '-' then
+        local notes = Keyframe.getCurrentKeyframe(currentFilm).notes
+        love.graphics.setColor(0,0,0,0.5)
+        love.graphics.rectangle('fill',16,Keyframe.y,500,love.graphics.getFont():getHeight()*5)
+        love.graphics.setColor(1,1,1)
+        love.graphics.print(notes,24,Keyframe.y+4)
+    end
 end
 
 function Keyframe.drawButton(buttonName,x,y)
@@ -164,8 +173,9 @@ end
 function Keyframe.clearRedundant()
     local newState = Keyframe.getStateAtTime(currentFilm.playhead)
     local oldState = bit.bor(Keyframe.getStateAtTime(currentFilm.playhead-1),ctlStateEnum.isKeyFrame)
+    local hasNote = Keyframe.getCurrentKeyframe(currentFilm) and Keyframe.getCurrentKeyframe(currentFilm).notes ~= '-'
     -- Checks for redundant keyframes
-    if newState == oldState then
+    if newState == oldState and not hasNote then
         Keyframe.list[currentFilm.playhead] = nil
         printst('Redundant Keyframe, deleted.')
     end
