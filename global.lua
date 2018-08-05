@@ -5,12 +5,13 @@ require('loadfile')
 KEYFRAME_LIST_GLOBAL = {}
 CURRENT_TEXT_BOX = require "textbox"
 CURRENT_MOUSEOVER_TARGET = ''
+CURRENT_MODE = 'default'
 
 currentFilm = nil -- input.lua needs currentFilm exposed, might retool this
 FileMgr = require('file_manager')
 DELIM = '\t'
 FILE_NAME = 'empty'
-APP_NAME = 'Framescop V1.0'
+APP_NAME = 'Framescop V1.4'
 CURRENT_AUTHOR = ''
 
 -- Fonts

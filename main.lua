@@ -134,17 +134,26 @@ function love.draw()
             love.graphics.setColor(1,1,1)
         end
 
+        
         love.graphics.setFont(BigFont)
+        love.graphics.setColor(0,0,0,0.5)
+        love.graphics.rectangle('fill',0,0,love.graphics.getWidth(),32)
+        love.graphics.setColor(1,1,1)
         love.graphics.print(StatusText)
 
         if FileMgr.trackPath then
             local textWidth = love.graphics.getFont():getWidth(FileMgr.trackPath)
             local textHeight = love.graphics.getFont():getHeight()
             local textX = love.graphics.getWidth()-textWidth
-            love.graphics.setColor(0,0,0,0.5)
-            love.graphics.rectangle('fill',textX,0,textWidth,textHeight)
-            love.graphics.setColor(1,1,1)
             love.graphics.print(FileMgr.trackPath,textX,0)
+        end
+
+        if CURRENT_MODE == 'notes' then
+            love.graphics.setColor(.25,.25,.5,.5)
+            love.graphics.rectangle('fill',0,0,love.graphics.getDimensions())
+            love.graphics.setColor(1,1,1)
+            printst('') -- clear the print status header
+            love.graphics.print('Notes at '..currentFilm:timeString()..':\n'..CURRENT_TEXT_BOX.body .. CURRENT_TEXT_BOX.cursor)
         end
     end
 end

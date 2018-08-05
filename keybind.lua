@@ -7,6 +7,7 @@ Keybind.table = {}
 Keybind.table.default = {}
 -- is this even used?
 Keybind.table.fileSelect = {}
+Keybind.table.notes = {}
 
 Keybind.new = function(key,name,mode)
     self = {}
@@ -14,24 +15,18 @@ Keybind.new = function(key,name,mode)
 
     self.name = name
     self.key = key
-
     if mode == nil then
         mode = 'default'
     end
+    self.mode = mode
 
     Keybind.table[mode][key] = self
 
     return self
 end
 
-Keybind.exec = function(key,mode)
-    -- Mode can be used to reclassify inputs depending on state
-    -- For example: main menu might have other uses for left/right than playback
-    if mode == nil then
-        mode = 'default'
-    end
-
-    local entry = Keybind.table[mode][key]
+Keybind.exec = function(key)
+    local entry = Keybind.table[CURRENT_MODE][key]
     if entry then
         local name = entry.name
         local action = Actions[name]
@@ -47,8 +42,10 @@ Keybind.new('right','stepRight')
 Keybind.new('left','stepLeft')
 Keybind.new('p','toggleRealtimePlayback')
 Keybind.new('delete','deleteCurrentKeyframe')
-
 Keybind.new('^s','save')
+Keybind.new('return','openNotes')
+Keybind.new('return','closeNotes','notes')
+
 local faceButtons = {'triangle','x','square','circle'}
 local wasd = {'w','s','a','d'}
 local directions = {'up','down','left','right'}

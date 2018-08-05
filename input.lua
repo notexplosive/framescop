@@ -13,7 +13,7 @@ function ctrlDown()
 end
 
 love.keyboard.setKeyRepeat(true)
-function love.textinput( text )
+function love.textinput(text)
     -- omit newline
     if text == '\n' then
         return
@@ -35,9 +35,12 @@ function love.keypressed(key, scancode, isrepeat)
             CURRENT_TEXT_BOX.body = CURRENT_TEXT_BOX.body:sub(1,#CURRENT_TEXT_BOX.body-1)
         end
 
-
-        -- Hotkeys shouldn't work if we have a text box selected, so we terminate early
-        return
+        -- This only applies to the textbox on the "assign author" screen. yes that's bad
+        -- TODO: maybe we just create a mode for 'author'?
+        if CURRENT_MODE == 'default' then
+            -- Hotkeys shouldn't work if we have a text box selected, so we terminate early
+            return
+        end
     end
 
     if currentFilm then

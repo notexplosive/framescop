@@ -64,4 +64,16 @@ Actions.deleteCurrentKeyframe = function()
     end
 end
 
+function Actions.openNotes()
+    CURRENT_TEXT_BOX.on = true
+    CURRENT_MODE = 'notes'
+end
+
+function Actions.closeNotes()
+    CURRENT_TEXT_BOX.submit()
+    local notes = CURRENT_TEXT_BOX.clear()
+    print(notes)
+    CURRENT_MODE = 'default'
+end
+
 return Actions
