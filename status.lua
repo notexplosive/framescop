@@ -5,7 +5,9 @@ StatusText = ""
 StatusTextTime = 0
 
 function printst(str)
-    print(str)
+    if str ~= '' then
+        print(str)
+    end
     StatusText = str
     StatusTextTime = 0
 end

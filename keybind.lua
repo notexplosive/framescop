@@ -36,8 +36,6 @@ Keybind.exec = function(key,mode)
         local name = entry.name
         local action = Actions[name]
 
-        print(name)
-        print(action)
         if action then
             print(name)
             action()
@@ -51,21 +49,24 @@ Keybind.new('p','toggleRealtimePlayback')
 Keybind.new('delete','deleteCurrentKeyframe')
 
 Keybind.new('^s','save')
-local faceButtons = {'tri','x','sqr','cir'}
-for i,dir in ipairs({'up','down','left','right'}) do
-    Keybind.new('^'..dir, dir .. 'ToKeyframe')
-    Keybind.new('@'..dir, faceButtons[i] .. 'ToKeyframe')
+local faceButtons = {'triangle','x','square','circle'}
+local wasd = {'w','s','a','d'}
+local directions = {'up','down','left','right'}
+for i,dir in ipairs(directions) do
+    local face = faceButtons[i]
+    Keybind.new('^'..dir, 'toggle' .. dir )
+    Keybind.new('@'..dir, 'toggle' .. face)
+    Keybind.new(wasd[i],'toggle' .. dir)
+    Keybind.new('@'..wasd[i],'toggle'..face)
 end
 
-for i,v in ipairs({'start','up','down','left','right','tri','x','sqr','cir','select'}) do
-    Keybind.new((i-1) .. '', v..'ToKeyframe')
-    Keybind.new('mouseClick'..v, v..'ToKeyframe')
+for i,v in ipairs({'start','up','down','left','right','triangle','x','square','circle','select'}) do
+    Keybind.new((i-1) .. '', 'toggle'..v)
+    Keybind.new('mouseClick'..v, 'toggle'..v)
 end
 
-
-Keybind.new('^'..'space','selectToKeyframe')
-Keybind.new('@'..'space','startToKeyframe')
-
+Keybind.new('^'..'space','toggleselect')
+Keybind.new('@'..'space','togglestart')
 Keybind.new('+right','jumpRight')
 Keybind.new('+left','jumpLeft')
 

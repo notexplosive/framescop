@@ -18,44 +18,10 @@ function appendToKeyframe(ctlStateKey)
     Keyframe.getCurrentKeyframe(currentFilm,true):flipState(mask)
 end
 
-Actions.upToKeyframe = function()
-    appendToKeyframe('up')
-end
-
-Actions.downToKeyframe = function()
-    appendToKeyframe('down')
-end
-
-Actions.leftToKeyframe = function()
-    appendToKeyframe('left')
-end
-
-Actions.rightToKeyframe = function()
-    appendToKeyframe('right')
-end
-
-Actions.triToKeyframe = function()
-    appendToKeyframe('triangle')
-end
-
-Actions.xToKeyframe = function()
-    appendToKeyframe('x')
-end
-
-Actions.sqrToKeyframe = function()
-    appendToKeyframe('square')
-end
-
-Actions.cirToKeyframe = function()
-    appendToKeyframe('circle')
-end
-
-Actions.startToKeyframe = function()
-    appendToKeyframe('start')
-end
-
-Actions.selectToKeyframe = function()
-    appendToKeyframe('select')
+for i,buttonName in ipairs(ctlStateEnum.ALL_BUTTONS) do
+    Actions['toggle'..buttonName] = function()
+        appendToKeyframe(buttonName)
+    end
 end
 
 Actions.jumpRight = function()

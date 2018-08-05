@@ -134,7 +134,15 @@ function Keyframe.drawButton(buttonName,x,y)
     end
 
     if isStartSelect(buttonName) then
-        love.graphics.print(buttonName,x,y,0,1,1,16,8)
+        local label = '??'
+        if buttonName == 'start' then
+            label = 'Start'
+        end
+        if buttonName == 'select' then
+            label = 'Sel'
+        end
+
+        love.graphics.print(label,x,y,0,1,1,love.graphics.getFont():getWidth(label)/2,8)
     end
 
     love.graphics.setColor(1,1,1)
@@ -151,6 +159,16 @@ function Keyframe.drawButton(buttonName,x,y)
 
     -- draw outline
     -- love.graphics.circle('line',x,y,r)
+end
+
+function Keyframe.clearRedundant()
+    local newState = Keyframe.getStateAtTime(currentFilm.playhead)
+    local oldState = bit.bor(Keyframe.getStateAtTime(currentFilm.playhead-1),ctlStateEnum.isKeyFrame)
+    -- Checks for redundant keyframes
+    if newState == oldState then
+        Keyframe.list[currentFilm.playhead] = nil
+        printst('Redundant Keyframe, deleted.')
+    end
 end
 
 -- flip one bit at on state enum

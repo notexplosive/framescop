@@ -1,5 +1,5 @@
 require('status')
-require('loadfile') -- <---- Should get rid of this one soon
+require('loadfile')
 
 -- General state
 KEYFRAME_LIST_GLOBAL = {}

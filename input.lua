@@ -53,13 +53,7 @@ function love.keypressed(key, scancode, isrepeat)
             Keybind.exec(key)
         end
 
-        local newState = Keyframe.getStateAtTime(currentFilm.playhead)
-        local oldState = bit.bor(Keyframe.getStateAtTime(currentFilm.playhead-1),ctlStateEnum.isKeyFrame)
-        -- Checks for redundant keyframes
-        if newState == oldState then
-            Keyframe.list[currentFilm.playhead] = nil
-            printst('Redundant Keyframe.')
-        end
+        Keyframe.clearRedundant()
     end
 end
 
@@ -80,9 +74,9 @@ function love.mousemoved(x,y,dx,dy,isTouch)
 end
 
 function love.mousepressed(x,y,button,isTouch)
-    if button == 1 and CURRENT_MOUSEOVER_TARGET ~= '' then
-        print(CURRENT_MOUSEOVER_TARGET)
+    if currentFilm and button == 1 and CURRENT_MOUSEOVER_TARGET ~= '' then
         Keybind.exec('mouseClick'..CURRENT_MOUSEOVER_TARGET)
+        Keyframe.clearRedundant()
     end
 
     -- Playhead capture
