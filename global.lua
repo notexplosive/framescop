@@ -6,6 +6,8 @@ KEYFRAME_LIST_GLOBAL = {}
 CURRENT_TEXT_BOX = require "textbox"
 CURRENT_MOUSEOVER_TARGET = ''
 CURRENT_MODE = 'default'
+MAP_ON = false
+MAP_LOCK = true
 
 currentFilm = nil -- input.lua needs currentFilm exposed, might retool this
 FileMgr = require('file_manager')

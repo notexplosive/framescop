@@ -11,10 +11,11 @@ Version 1.0
 Requested Features on my radar:
 +Maintain aspect ratio
 
+Version 1.4:
++ Mouse support
+
 Future Versions:
 +Support varied framerates
-+Mouse support
-	+Scroll wheel to traverse frames
 +Controller support?
 	+Might be more comfortable for some people? idk
 +Multivideo playback
@@ -22,4 +23,3 @@ Future Versions:
 +Audio
 +Move keyframes after they've been created (maybe? might make UI to complicated)
 +Better save UI so you can distinguish marvin/paul on the same video
-+Actually be a standalone executable and not a love2d frankenstein

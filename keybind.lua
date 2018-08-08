@@ -49,6 +49,7 @@ Keybind.new('p','toggleRealtimePlayback')
 Keybind.new('delete','deleteCurrentKeyframe')
 Keybind.new('^s','save')
 Keybind.new('return','openNotes')
+Keybind.new('escape','closeNotes','notes')
 Keybind.new('return','closeNotes','notes')
 
 local faceButtons = {'triangle','x','square','circle'}
@@ -73,5 +74,7 @@ Keybind.new('+right','jumpRight')
 Keybind.new('+left','jumpLeft')
 
 Keybind.new('middleClick','toggleRealtimePlayback')
+Keybind.new('m',"toggleMap")
+Keybind.new('n',"toggleMapLock")
 
 return Keybind

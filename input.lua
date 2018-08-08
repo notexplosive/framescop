@@ -74,6 +74,11 @@ function love.mousemoved(x,y,dx,dy,isTouch)
     if currentFilm then
         
     end
+
+    if love.mouse.isDown(1) then
+        Paintscop.root.x = Paintscop.root.x + dx
+        Paintscop.root.y = Paintscop.root.y + dy
+    end
 end
 
 function love.mousepressed(x,y,button,isTouch)
@@ -98,6 +103,8 @@ function love.mousepressed(x,y,button,isTouch)
             end
         end
     end
+
+    MAP_LOCK = false
 end
 
 function love.wheelmoved(x,y)

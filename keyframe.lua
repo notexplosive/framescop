@@ -12,7 +12,7 @@ Keyframe.new = function(film,frameIndex,state,data)
     end
 
     if state ~= 0 then
-        printst('Keyframe created')
+        --printst('Keyframe created')
     end
 
     local self = {}
@@ -65,7 +65,6 @@ Keyframe.drawUI = function(film)
 
     love.graphics.setColor(white())
 
-    -- Up/Down/Left/Right are all just rotated V's. I'm lazy like that.
     local dis = 24
     Keyframe.drawButton('up',x+dis,y)
     Keyframe.drawButton('down',x+dis,y+dis*2)
@@ -85,10 +84,12 @@ Keyframe.drawUI = function(film)
     -- display notes
     if Keyframe.getCurrentKeyframe(currentFilm) and Keyframe.getCurrentKeyframe(currentFilm).notes ~= '-' then
         local notes = Keyframe.getCurrentKeyframe(currentFilm).notes
-        love.graphics.setColor(uiBackgroundColor())
-        love.graphics.rectangle('fill',16,Keyframe.y-16,500,love.graphics.getFont():getHeight()*5)
-        love.graphics.setColor(white())
-        love.graphics.print(notes,24,Keyframe.y-12)
+        if notes ~= nil then
+            love.graphics.setColor(uiBackgroundColor())
+            love.graphics.rectangle('fill',16,Keyframe.y-16,500,love.graphics.getFont():getHeight()*5)
+            love.graphics.setColor(white())
+            love.graphics.print(notes,24,Keyframe.y-12)
+        end
     end
 end
 

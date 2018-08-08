@@ -1,6 +1,7 @@
 require('global')
 require('input')
 require('colors')
+require('paintscop')
 
 local Button = require('button')
 local ctlStateEnum = require('controller_state')
@@ -170,6 +171,11 @@ function love.draw()
             Button.normal(playPause,buttonx+128,buttony,64,32,'toggleRealtimePlayback')
             Button.normal('>>',buttonx+256,buttony,64,32,'jumpRight')
             Button.normal('<<',buttonx,buttony,64,32,'jumpLeft')
+            Button.normal('Map',buttonx+256+64,buttony,32,32,'toggleMap')
         end
+    end
+
+    if MAP_ON then
+        Paintscop.draw()
     end
 end

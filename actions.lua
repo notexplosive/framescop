@@ -68,6 +68,9 @@ function Actions.openNotes()
     CURRENT_TEXT_BOX.on = true
     local kf = Keyframe.getCurrentKeyframe(currentFilm,false)
     if kf and kf.notes ~= '-' then
+        if kf.notes == nil then
+            kf.notes = ''
+        end
         CURRENT_TEXT_BOX.body = kf.notes
     end
     CURRENT_MODE = 'notes'
@@ -81,6 +84,17 @@ function Actions.closeNotes()
     end
     Keyframe.getCurrentKeyframe(currentFilm,true).notes = notes
     CURRENT_MODE = 'default'
+end
+
+function Actions.toggleMap()
+    MAP_ON = not MAP_ON
+    if MAP_ON then
+        MAP_LOCK = true
+    end
+end
+
+function Actions.toggleMapLock()
+    MAP_LOCK = not MAP_LOCK
 end
 
 return Actions
