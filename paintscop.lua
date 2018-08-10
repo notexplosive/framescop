@@ -2,7 +2,7 @@ require('global')
 require('colors')
 
 Paintscop = {}
-Paintscop.zoom = 4
+Paintscop.zoom = 3
 Paintscop.root = {
     x = love.graphics.getWidth()/2,
     y = love.graphics.getHeight()/2
@@ -12,14 +12,13 @@ function Paintscop.draw()
     local currentx,currenty = 0,0
 
     love.graphics.setColor(1,1,1,.5)
-    if KEYFRAME_LIST_GLOBAL ~= nil and #KEYFRAME_LIST_GLOBAL > 0 then
+    if KEYFRAME_LIST_GLOBAL ~= nil then
         local x,y = 0,0
         local mostRecentKeyframe = nil
         local r = 0
         local hoveredFrame = nil
 
-        for i=0,currentFilm.totalFrames do
-
+        for i=1,currentFilm.totalFrames do
             local waited = true
             local isKeyframe = KEYFRAME_LIST_GLOBAL[i] ~= nil
             if isKeyframe then
@@ -61,6 +60,7 @@ function Paintscop.draw()
                     love.graphics.setColor(1,1,1)
                     love.graphics.rectangle('fill',drawx,drawy,2,2)
                 end
+
                 love.graphics.rectangle('fill',drawx,drawy,1,1)
             end
 
