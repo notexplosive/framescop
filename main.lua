@@ -54,7 +54,7 @@ function love.draw()
         local text = 'Tool is extracting frames!'
         local items = love.filesystem.getDirectoryItems('framedata/'..CURRENT_FRAMES_DIR)
         love.graphics.setColor(1,1,1)
-        love.graphics.circle('fill',w/2,h/2,256 + math.random(32),math.random(32)+16)
+        love.graphics.circle('line',w/2,h/2,256 + math.random(32),math.random(32)+16)
 
         if #items > 10 then
             love.graphics.print(CURRENT_FRAMES_INDEX)
@@ -70,7 +70,6 @@ function love.draw()
         end
 
         ExtractAnimation.draw()
-        love.graphics.setColor(0,0,0)
         love.graphics.print(text,math.floor(w/2 - love.graphics.getFont():getWidth(text) / 2),math.floor(h/2 + 128))
         return
     end
