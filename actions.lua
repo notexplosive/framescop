@@ -97,4 +97,8 @@ function Actions.toggleMapLock()
     MAP_LOCK = not MAP_LOCK
 end
 
+function Actions.toggleUIFlip()
+    UI_FLIP = not UI_FLIP
+end
+
 return Actions

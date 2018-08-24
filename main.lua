@@ -7,6 +7,7 @@ local Button = require('button')
 local ctlStateEnum = require('controller_state')
 local Film = require('film')
 local Keyframe = require('keyframe')
+local ExtractAnimation = require('extract_animation')
 
 require('tests.test_all')
 
@@ -46,7 +47,33 @@ function love.update(dt)
 end
 
 function love.draw()
-    love.graphics.setFont(LOVEdefaultFont)
+    love.graphics.setFont(BigFont)
+
+    if CURRENT_FRAMES_DIR ~= '' then
+        local w,h = love.graphics.getDimensions()
+        local text = 'Tool is extracting frames!'
+        local items = love.filesystem.getDirectoryItems('framedata/'..CURRENT_FRAMES_DIR)
+        love.graphics.setColor(1,1,1)
+        love.graphics.circle('fill',w/2,h/2,256 + math.random(32),math.random(32)+16)
+
+        if #items > 10 then
+            love.graphics.print(CURRENT_FRAMES_INDEX)
+            local advanced = false
+            if CURRENT_FRAMES_INDEX < #items then
+                advanced = true
+                CURRENT_FRAMES_INDEX = #items
+            end
+
+            if advanced then
+                local image = ExtractAnimation.new('framedata/' .. CURRENT_FRAMES_DIR .. '/' .. CURRENT_FRAMES_INDEX-1 .. '.png')
+            end
+        end
+
+        ExtractAnimation.draw()
+        love.graphics.setColor(0,0,0)
+        love.graphics.print(text,math.floor(w/2 - love.graphics.getFont():getWidth(text) / 2),math.floor(h/2 + 128))
+        return
+    end
 
     if not currentFilm then
         if CURRENT_AUTHOR == '' then
@@ -68,7 +95,7 @@ function love.draw()
         local binaries = loadWorkingDirectory()
         if #binaries == 0 then
             love.filesystem.createDirectory('framedata')
-            love.graphics.print('No data found. Framedata folder does not have any valid directories.')
+            love.graphics.print('No data found, but we can fix that!\nPlease drag an MP4 video onto this window.')
         end
 
         -- File select menu: I threw this together in 5 minutes.
@@ -112,6 +139,10 @@ function love.draw()
             local height = 16
             local x = rootx + width*i
             local y = love.graphics.getHeight() - 64 - 32 - 6
+
+            if UI_FLIP then
+                y = 64 + 32
+            end
 
             if i == 0 then
                 y = y - 3
@@ -161,17 +192,27 @@ function love.draw()
 
         if CURRENT_MODE == 'default' then
             local playPause = 'Play'
+            local uiFlip = "^"
+            if UI_FLIP then
+                uiFlip = "v"
+            end
             if currentFilm.playRealTime then
                 playPause = 'Pause'
             end
             local buttonx = 16
             local buttony = love.graphics.getHeight() - 80
+
+            if UI_FLIP then
+                buttony = 32 + 16
+            end
+
             Button.normal('>',buttonx+192,buttony,64,32,'stepRight')
             Button.normal('<',buttonx+64,buttony,64,32,'stepLeft')
             Button.normal(playPause,buttonx+128,buttony,64,32,'toggleRealtimePlayback')
             Button.normal('>>',buttonx+256,buttony,64,32,'jumpRight')
             Button.normal('<<',buttonx,buttony,64,32,'jumpLeft')
             Button.normal('Map',buttonx+256+64,buttony,32,32,'toggleMap')
+            Button.normal(uiFlip,buttonx + 256 + 128 + 64 + 32 + 16,buttony,16,32,'toggleUIFlip')
         end
     end
 

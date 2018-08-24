@@ -37,6 +37,10 @@ Timeline.draw = function(self)
     local textx = love.graphics.getWidth() - 124 - 256 - 32
     local texty = love.graphics.getHeight() - 32 - love.graphics.getFont():getHeight() - 16 - 4
 
+    if UI_FLIP then
+        texty = 32 + 16
+    end
+
     love.graphics.setColor(uiBackgroundColor())
     love.graphics.rectangle('fill',
         textx-4,

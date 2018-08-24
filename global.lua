@@ -8,12 +8,21 @@ CURRENT_MOUSEOVER_TARGET = ''
 CURRENT_MODE = 'default'
 MAP_ON = false
 MAP_LOCK = true
+UI_FLIP = false
 
-currentFilm = nil -- input.lua needs currentFilm exposed, might retool this
+-- Image extraction
+THREAD_POOL = {}
+CURRENT_FRAMES_DIR = ''
+CURRENT_FRAMES_INDEX = 1
+
+-- God Objects
+currentFilm = nil
+
+-- File Management
 FileMgr = require('file_manager')
 DELIM = '\t'
 FILE_NAME = 'empty'
-APP_NAME = 'Framescop V1.4'
+APP_NAME = 'Framescop V1.5'
 CURRENT_AUTHOR = ''
 
 -- Fonts

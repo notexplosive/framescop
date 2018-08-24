@@ -48,6 +48,10 @@ Keyframe.drawUI = function(film)
     Keyframe.x = love.graphics.getWidth() - 256 - 4
     Keyframe.y = love.graphics.getHeight() - 128 - 32
 
+    if UI_FLIP then
+        Keyframe.y = 64
+    end
+
     local buttonRadius = 16
     local x = Keyframe.x+buttonRadius
     local y = Keyframe.y+buttonRadius

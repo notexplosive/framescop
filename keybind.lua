@@ -76,5 +76,6 @@ Keybind.new('+left','jumpLeft')
 Keybind.new('middleClick','toggleRealtimePlayback')
 Keybind.new('m',"toggleMap")
 Keybind.new('n',"toggleMapLock")
+Keybind.new('\\',"toggleUIFlip")
 
 return Keybind
