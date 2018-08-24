@@ -70,6 +70,15 @@ function love.draw()
         end
 
         ExtractAnimation.draw()
+        if ExtractAnimation.timeSpentStalled > 60 * 3 then
+            text = "Looks like we're done..?"
+
+            -- This means we never loaded a frame
+            if #items == 0 then
+                text = "Something went wrong with ffmpeg\nor your mp4 file."
+            end
+        end
+
         love.graphics.print(text,math.floor(w/2 - love.graphics.getFont():getWidth(text) / 2),math.floor(h/2 + 128))
         return
     end

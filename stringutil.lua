@@ -7,6 +7,11 @@ function isInList(element,table)
     end
     return false
 end
+
+-- Generic utility to get a random element of an array
+function getRandom(table)
+    return table[math.random(#table)]
+end
     
 -- Taken from SuperFastNinja on StackOverflow
 function string.split(inputstr, sep)

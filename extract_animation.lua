@@ -35,7 +35,7 @@ function ExtractAnimation.draw()
 
     ExtractAnimation.timeSpentStalled = ExtractAnimation.timeSpentStalled + 1
 
-    if ExtractAnimation.timeSpentStalled > 120 then
+    if ExtractAnimation.timeSpentStalled > 60 * 5 then
         CURRENT_FRAMES_DIR = ''
         CURRENT_FRAMES_INDEX = 0
     end
