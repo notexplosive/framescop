@@ -76,8 +76,8 @@ function love.mousemoved(x,y,dx,dy,isTouch)
     end
 
     if love.mouse.isDown(1) then
-        Paintscop.root.x = Paintscop.root.x + dx
-        Paintscop.root.y = Paintscop.root.y + dy
+        Map.root.x = Map.root.x + dx
+        Map.root.y = Map.root.y + dy
     end
 end
 

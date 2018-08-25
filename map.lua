@@ -1,14 +1,14 @@
 require('global')
 require('colors')
 
-Paintscop = {}
-Paintscop.zoom = 3
-Paintscop.root = {
+Map = {}
+Map.zoom = 3
+Map.root = {
     x = love.graphics.getWidth()/2,
     y = love.graphics.getHeight()/2
 }
 
-function Paintscop.draw()
+function Map.draw()
     local currentx,currenty = 0,0
 
     love.graphics.setColor(1,1,1,.5)
@@ -25,7 +25,7 @@ function Paintscop.draw()
                 mostRecentKeyframe = KEYFRAME_LIST_GLOBAL[i]
             end
 
-            local drawx,drawy = Paintscop.root.x + Paintscop.zoom * x, Paintscop.root.y + Paintscop.zoom * y
+            local drawx,drawy = Map.root.x + Map.zoom * x, Map.root.y + Map.zoom * y
 
             if mostRecentKeyframe then
                 if mostRecentKeyframe:hasState("up") then 
@@ -69,8 +69,8 @@ function Paintscop.draw()
                 currenty = y
 
                 if MAP_LOCK then
-                    Paintscop.root.x = love.graphics.getWidth()/2 - currentx*Paintscop.zoom
-                    Paintscop.root.y = love.graphics.getHeight()/2 - currenty*Paintscop.zoom
+                    Map.root.x = love.graphics.getWidth()/2 - currentx*Map.zoom
+                    Map.root.y = love.graphics.getHeight()/2 - currenty*Map.zoom
                 end
                 love.graphics.setColor(0,1,0)
                 love.graphics.circle('fill',drawx,drawy,5)
@@ -93,7 +93,8 @@ function Paintscop.draw()
         end
     
         if hoveredFrame then
-            print(hoveredFrame)
+            love.graphics.setColor(1,1,1,0.75)
+            love.graphics.draw(love.graphics.newImage(currentFilm.path .. '/' .. hoveredFrame .. '.png') )
         end
     end
 

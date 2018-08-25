@@ -1,7 +1,7 @@
 require('global')
 require('input')
 require('colors')
-require('paintscop')
+require('map')
 
 local Button = require('button')
 local ctlStateEnum = require('controller_state')
@@ -225,6 +225,6 @@ function love.draw()
     end
 
     if MAP_ON then
-        Paintscop.draw()
+        Map.draw()
     end
 end
