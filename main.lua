@@ -119,7 +119,7 @@ function love.draw()
                     "No data found and it looks like in-app frame\nextraction isn't working.\n\n\nDrag your mp4 onto the frame-extractor.bat\nand then restart Framescop"
                 )
             else
-                love.graphics.print("No data found, but we can fix that!\nPlease drag an MP4 video onto this window.")
+                love.graphics.print("No data found, but we can fix that!\nPlease drag an MP4 video onto this window.\n\nYou may need to restart if you just added a new video")
             end
         end
 

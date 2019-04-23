@@ -78,4 +78,6 @@ Keybind.new("m", "toggleMap")
 Keybind.new("n", "toggleMapLock")
 Keybind.new("\\", "toggleUIFlip")
 
+Keybind.new("^y","crash") -- Yes. CTRL+Y crashes framescop on purpose, used for testing.
+
 return Keybind

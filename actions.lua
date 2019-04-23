@@ -64,6 +64,10 @@ Actions.deleteCurrentKeyframe = function()
     end
 end
 
+function Actions.crash()
+    assert(false,"Crashed on purpose for testing purposes, or you somehow managed to hit CTRL+Y by accident")
+end
+
 function Actions.openNotes()
     CURRENT_TEXT_BOX.on = true
     local kf = Keyframe.getCurrentKeyframe(currentFilm, false)
