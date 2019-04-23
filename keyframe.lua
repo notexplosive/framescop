@@ -23,7 +23,7 @@ Keyframe.new = function(film,frameIndex,state,data)
         -- Every few created keyframes, save.
         if FileMgr.autosaveCount > 10 then
             FileMgr.autosaveCount = 0
-            FileMgr.saveAs('autosave')
+            FileMgr.saveAs('autosave' .. love.math.random(1000))
         end
     end
 

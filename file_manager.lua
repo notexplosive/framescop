@@ -107,7 +107,7 @@ FileMgr.serializeList = function(filename)
     end
 
     if filename == nil then
-        filename = FileMgr.film:getTrackPath()
+        filename = FileMgr.film:getTrackPath() or 'Unknown' .. math.random(100000)
     end
 
     love.filesystem.write(filename, text)

@@ -57,3 +57,10 @@ function updateWindowTitle()
     local title = easterEgg[love.math.random(1,#easterEgg)]
     love.window.setTitle(title .. ' - ' .. FILE_NAME)
 end
+
+local oldErrorHandler = love.errorhandler
+
+function love.errorhandler(msg)
+    oldErrorHandler(msg)
+    Actions.save()
+end
