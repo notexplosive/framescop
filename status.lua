@@ -5,7 +5,7 @@ StatusText = ""
 StatusTextTime = 0
 
 function printst(str)
-    if str ~= '' then
+    if str ~= "" then
         print(str)
     end
     StatusText = str
@@ -14,8 +14,8 @@ end
 
 function updateStatusText(dt)
     StatusTextTime = StatusTextTime + dt
-    if StatusTextTime > 2 and StatusText ~= '' then
-        printst('')
+    if StatusTextTime > 2 and StatusText ~= "" then
+        printst("")
     end
 end
 

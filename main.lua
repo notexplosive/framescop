@@ -115,7 +115,9 @@ function love.draw()
         if #binaries == 0 then
             love.filesystem.createDirectory("framedata")
             if not EXTERNAL_COMMANDS_ALLOWED then
-                love.graphics.print("No data found and it looks like in-app frame\nextraction isn't working.\n\n\nDrag your mp4 onto the frame-extractor.bat\nand then restart Framescop")
+                love.graphics.print(
+                    "No data found and it looks like in-app frame\nextraction isn't working.\n\n\nDrag your mp4 onto the frame-extractor.bat\nand then restart Framescop"
+                )
             else
                 love.graphics.print("No data found, but we can fix that!\nPlease drag an MP4 video onto this window.")
             end

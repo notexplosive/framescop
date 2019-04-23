@@ -8,19 +8,19 @@ function loadWorkingDirectory()
         WorkingDirectoryBinaries = {}
     end
 
-    local binaries = love.filesystem.getDirectoryItems('framedata')
+    local binaries = love.filesystem.getDirectoryItems("framedata")
 
-    for i,folderName in ipairs(binaries) do
-        local path = 'framedata/'..folderName
-        if love.filesystem.getInfo(path).type == 'directory' then
+    for i, folderName in ipairs(binaries) do
+        local path = "framedata/" .. folderName
+        if love.filesystem.getInfo(path).type == "directory" then
             local files = love.filesystem.getDirectoryItems(path)
-            for j,filename in ipairs(files) do
-                if filename == '1.png' then
+            for j, filename in ipairs(files) do
+                if filename == "1.png" then
                     obj = {}
                     obj.path = path
                     obj.filename = folderName
                     -- TODO: This gets repeated in film.lua, extract this out
-                    local lines = love.filesystem.read(path .. '/' .. filename):split('\n')
+                    local lines = love.filesystem.read(path .. "/" .. filename):split("\n")
                     obj.niceTitle = lines[1]
                     obj.fps = tonumber(lines[2])
                     WorkingDirectoryBinaries[#WorkingDirectoryBinaries + 1] = obj
